@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.5)
 
 project(GLStudy VERSION 0.1 LANGUAGES CXX)
-set(-DCMAKE_TOOLCHAIN_FILE E:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake)
+#set(-DCMAKE_TOOLCHAIN_FILE E:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -16,7 +16,12 @@ set(PROJECT_SOURCES
         main.cpp
         glwidget.cpp
         glwidget.h
-
+        Camera.cpp
+        Camera.h
+        OrthographicCamera.h
+        OrthographicCamera.cpp
+        PerspectiveCamera.h
+        PerspectiveCamera.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -44,8 +49,6 @@ endif()
 
 target_link_libraries(GLStudy PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-find_package(glm CONFIG REQUIRED)
-target_link_libraries(GLStudy PRIVATE glm::glm)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
