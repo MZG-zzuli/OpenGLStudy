@@ -92,6 +92,10 @@ void GLWidget::initializeGL()
 	shader_program_->setUniformValue("sampler", texture_id);
 	auto mat=viewMatrix;
 
+	//y轴旋转矩阵
+	transMatrix.rotate(angle, QVector3D(0.0f, 1.0f, 0.0f));
+	shader_program_->setUniformValue("transMatrix", transMatrix);
+
 	//看的位置，方向，相机顶部方向
 	viewMatrix.lookAt(QVector3D(-0.5f, 0.0f, 0.5f), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
 	shader_program_->setUniformValue("viewMatrix", viewMatrix);
@@ -100,7 +104,6 @@ void GLWidget::initializeGL()
 	//相机视张角度，宽高比，近裁剪面，远裁剪面
 	perspectMatrix.perspective(65.0f, 1920.0f / 1080.0f, 0.5f, 100.0f);
 	shader_program_->setUniformValue("perspectiveMatrix", perspectMatrix);
-
 
 	glClear(GL_COLOR_BUFFER_BIT);
 	//使用顶点缓冲区绘制
@@ -113,7 +116,10 @@ void GLWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	shader_program_->bind();
-	texture_->bind(); 
+	texture_->bind();
+	angle+=1.0f;
+	transMatrix.rotate(qDegreesToRadians(angle), QVector3D(0.0f, 1.0f, 0.0f));
+	shader_program_->setUniformValue("transMatrix", transMatrix);
 	shader_program_->setUniformValue("viewMatrix", viewMatrix);
 	shader_program_->setUniformValue("perspectMatrix", perspectMatrix);
 

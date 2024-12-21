@@ -10,6 +10,7 @@
 #include<QOpenGLShader>
 #include<QOpenGLShaderProgram>
 #include<QOpenGLTexture>
+#include<QtMath>
 class GLWidget : public QOpenGLWidget,public QOpenGLExtraFunctions
 {
     Q_OBJECT
@@ -34,5 +35,7 @@ private:
     QOpenGLBuffer* ebo_;
     QMatrix4x4 viewMatrix=QMatrix4x4();
     QMatrix4x4 perspectMatrix=QMatrix4x4();
+    float angle=0.0f;
+    QMatrix4x4 transMatrix=QMatrix4x4();
 };
 #endif // GLWIDGET_H
