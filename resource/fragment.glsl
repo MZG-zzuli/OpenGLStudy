@@ -13,6 +13,6 @@ void main(){
 	//vec4 grassColor=
 	//vec4 landColor=texture(sampler1,UV);
 	//vec4 noiseColor=texture(sampler2,UV);
-	//FragColor1=texture(sampler,UV);//mix(grassColor,landColor,noiseColor.r);
-	FragColor1=vec4(0.2,0.5,0.0,1.0);
+	FragColor1=texture(sampler,UV);//mix(grassColor,landColor,noiseColor.r);
+
 };

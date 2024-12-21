@@ -9,6 +9,7 @@
 #include<QOpenGLBuffer>
 #include<QOpenGLShader>
 #include<QOpenGLShaderProgram>
+#include<QOpenGLTexture>
 class GLWidget : public QOpenGLWidget,public QOpenGLExtraFunctions
 {
     Q_OBJECT
@@ -27,6 +28,11 @@ private:
     QOpenGLShaderProgram* shader_program_;
     QOpenGLVertexArrayObject* vao_;
     QOpenGLBuffer* vbo_;
+    QOpenGLBuffer* color_vbo_;
+    QOpenGLBuffer* uv_vbo_;
+    QOpenGLTexture* texture_;
     QOpenGLBuffer* ebo_;
+    QMatrix4x4 viewMatrix=QMatrix4x4();
+    QMatrix4x4 perspectMatrix=QMatrix4x4();
 };
 #endif // GLWIDGET_H
