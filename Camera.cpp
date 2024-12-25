@@ -40,7 +40,7 @@ void Camera::onRotate(QPoint pos)
 void Camera::pitch(float angle)
 {
 	QMatrix4x4 rotateMat;
-	rotateMat.rotate(angle, mRight_);
+	rotateMat.rotate(angle, mRight_);				//绕右向量旋转
 	mUp_ = rotateMat * mUp_;
 	mPosition_ = rotateMat * mPosition_;
 
@@ -49,7 +49,7 @@ void Camera::pitch(float angle)
 void Camera::yaw(float angle)
 {
 	QMatrix4x4 rotateMat;
-	rotateMat.rotate(angle, mUp_);
+	rotateMat.rotate(angle, QVector3D(0, 1, 0));	//绕世界y轴旋转
 	mUp_ = rotateMat * mUp_;
 	mRight_ = rotateMat * mRight_;
 	mPosition_ = rotateMat * mPosition_;
