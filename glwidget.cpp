@@ -1,10 +1,12 @@
 ﻿#include "glwidget.h"
 #include<iostream>
 #include<QDebug>
+#include"OrthographicCamera.h"
 GLWidget::GLWidget(QOpenGLWidget* parent)
 	: QOpenGLWidget(parent)
 {
 	camera = std::make_shared<PerspectiveCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 100.0f);
+	//camera=std::make_shared<OrthographicCamera>(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
 }
  
 GLWidget::~GLWidget()
@@ -41,7 +43,7 @@ void GLWidget::paintGL()
 	//shader_program_->setUniformValue("transMatrix", transMatrix);
 	//shader_program_->setUniformValue("viewMatrix", viewMatrix);
 	shader_program_->setUniformValue("viewMatrix", camera->getViewMatrix());
-	shader_program_->setUniformValue("perspectMatrix", camera->getProjectionMatrix());
+	shader_program_->setUniformValue("projectionMatrix", camera->getProjectionMatrix());
 
 	//glDrawArrays(GL_TRIANGLES,0,3);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -54,10 +56,7 @@ void GLWidget::resizeGL(int w, int h)
 void GLWidget::mousePressEvent(QMouseEvent* event)
 {
 	std::cout << "mousePressEvent" << std::endl;
-	if (event->button() == Qt::RightButton)
-	{
-		camera->setLastMousePos(event->pos());
-	}
+	camera->setLastMousePos(event->pos());
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event)
@@ -68,6 +67,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 		camera->onRotate(event->pos());
 		update();
 	}
+	else if(event->buttons() & Qt::MiddleButton)
+	{
+		camera->onMove(event->pos());
+		update();
+	}
 	std::cout << "mouseMoveEvent" << std::endl;
 	QPoint pos = event->pos();
 	qDebug()<<lastPos<<pos;
@@ -76,7 +80,13 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 
 void GLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-	std::cout << "mouseReleaseEvent" << std::endl;
+}
+
+void GLWidget::wheelEvent(QWheelEvent* event)
+{
+	std::cout<<"wheel:"<<event->delta()<<std::endl;
+	camera->onZoom(event->delta());
+	update();
 }
 
 void GLWidget::initShaders()
@@ -108,10 +118,10 @@ void GLWidget::initBuffers()
 
 	//顶点坐标
 	float vertex_[] = {
-		-0.2f,-0.2f,0.2f,
-		0.2f,-0.2f,0.2f,
-		-0.2f,0.2f,0.2f,
-		0.2f,0.2f,0.2f
+		-0.5f,-0.5f,0.5f,
+		0.5f,-0.5f,0.5f,
+		-0.5f,0.5f,0.5f,
+		0.5f,0.5f,0.5f
 	};
 	vbo_->create();
 	vbo_->bind();

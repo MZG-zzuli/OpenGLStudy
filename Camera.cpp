@@ -16,31 +16,35 @@ QMatrix4x4 Camera::getViewMatrix()
 	return viewMatrix;
 }
 
-QMatrix4x4 Camera::getProjectionMatrix()
-{
-	return QMatrix4x4();
-}
-
 void Camera::setLastMousePos(QPoint pos)
 {
-	mLastPos_=pos;
+	last_pos_=pos;
 }
 
 void Camera::onRotate(QPoint pos)
 {
-	int dx=pos.x()-mLastPos_.x();
-	int dy=pos.y()-mLastPos_.y();
-	mLastPos_=pos;
+	int dx=pos.x()-last_pos_.x();
+	int dy=pos.y()-last_pos_.y();
+	last_pos_=pos;
 	float delta_x=dx* sensitivity_;
 	float delta_y=dy* sensitivity_;
 	pitch(-delta_y);
 	yaw(-delta_x);
 }
 
+void Camera::onMove(QPoint pos)
+{
+	int dx = pos.x() - last_pos_.x();
+	int dy = pos.y() - last_pos_.y();
+	last_pos_ = pos;
+	mPosition_ -= mRight_ * dx * move_speed_;
+	mPosition_ += mUp_ * dy * move_speed_;
+}
+
 void Camera::pitch(float angle)
 {
 	QMatrix4x4 rotateMat;
-	rotateMat.rotate(angle, mRight_);				//绕右向量旋转
+	rotateMat.rotate(angle, mRight_);				//绕右向量(相机x轴)旋转
 	mUp_ = rotateMat * mUp_;
 	mPosition_ = rotateMat * mPosition_;
 

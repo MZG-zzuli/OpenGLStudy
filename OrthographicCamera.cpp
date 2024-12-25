@@ -6,14 +6,20 @@ OrthographicCamera::OrthographicCamera(float left, float right, float bottom, fl
 	m_right_(right),
 	m_bottom_(bottom),
 	m_top_(top),
-	m_near_(Near),
-	m_far_(Far)
+	near_(Near),
+	far_(Far)
 {
 }
 
 QMatrix4x4 OrthographicCamera::getProjectionMatrix()
 {
 	QMatrix4x4 projectionMatrix;
-	projectionMatrix.ortho(m_left_, m_right_, m_bottom_, m_top_, m_near_, m_far_);
+	float zoom=std::pow(2.0f, zoom_);
+	projectionMatrix.ortho(m_left_ * zoom, m_right_ * zoom, m_bottom_ * zoom, m_top_ * zoom, near_, far_);
 	return projectionMatrix;
+}
+
+void OrthographicCamera::onZoom(float delta)
+{
+	zoom_ += delta * zoom_speed_;
 }

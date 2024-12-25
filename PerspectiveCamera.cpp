@@ -3,16 +3,22 @@
 
 
 PerspectiveCamera::PerspectiveCamera(float fov, float aspect, float Near, float Far):
-	m_fov_(fov),
-	m_aspect_(aspect),
-	m_near_(Near),
-	m_far_(Far)
+	fov_(fov),
+	aspect_(aspect),
+	near_(Near),
+	far_(Far)
 {
 }
 
 QMatrix4x4 PerspectiveCamera::getProjectionMatrix()
 {
 	QMatrix4x4 projectionMatrix;
-	projectionMatrix.perspective(m_fov_, m_aspect_, m_near_, m_far_);
+	projectionMatrix.perspective(fov_, aspect_, near_, far_);
 	return projectionMatrix;
+}
+
+void PerspectiveCamera::onZoom(float delta)
+{
+	QVector3D front= QVector3D::crossProduct(mUp_, mRight_);
+	mPosition_ += front * delta * zoom_speed_;
 }
