@@ -1,4 +1,4 @@
-#include "OrthographicCamera.h"
+#include "../include/OrthographicCamera.h"
 
 
 OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float Near, float Far):

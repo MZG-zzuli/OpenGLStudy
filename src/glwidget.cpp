@@ -1,12 +1,14 @@
-﻿#include "glwidget.h"
+﻿#include "../include/glwidget.h"
 #include<iostream>
 #include<QDebug>
-#include"OrthographicCamera.h"
+#include"../include/OrthographicCamera.h"
+#include"../include/perspectiveGameCamera.h"
 GLWidget::GLWidget(QOpenGLWidget* parent)
 	: QOpenGLWidget(parent)
 {
-	camera = std::make_shared<PerspectiveCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 100.0f);
+	//camera = std::make_shared<PerspectiveCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 100.0f);
 	//camera=std::make_shared<OrthographicCamera>(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+	camera = std::make_shared<PerspectiveGameCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 1000.0f);
 }
  
 GLWidget::~GLWidget()
@@ -36,6 +38,7 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
+	camera->updataCameraPosition();
 	shader_program_->bind();
 	texture_->bind();
 	angle=10.0f;
@@ -55,7 +58,6 @@ void GLWidget::resizeGL(int w, int h)
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
 {
-	std::cout << "mousePressEvent" << std::endl;
 	camera->setLastMousePos(event->pos());
 }
 
@@ -63,7 +65,6 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 {
 	if (event->buttons() & Qt::RightButton)
 	{
-		std::cout << "right button" << std::endl;
 		camera->onRotate(event->pos());
 		update();
 	}
@@ -72,14 +73,20 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 		camera->onMove(event->pos());
 		update();
 	}
-	std::cout << "mouseMoveEvent" << std::endl;
-	QPoint pos = event->pos();
-	qDebug()<<lastPos<<pos;
-	lastPos = pos;
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+}
+
+void GLWidget::keyPressEvent(QKeyEvent* event)
+{
+	camera->onMove(event->key(), true);
+}
+
+void GLWidget::keyReleaseEvent(QKeyEvent* event)
+{
+	camera->onMove(event->key(), false);
 }
 
 void GLWidget::wheelEvent(QWheelEvent* event)

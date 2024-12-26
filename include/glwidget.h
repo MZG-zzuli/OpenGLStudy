@@ -31,6 +31,8 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;          //wasd控制摄像机移动
+    void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent* event) override;
     void initShaders();
     void initBuffers();

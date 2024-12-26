@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "../include/Camera.h"
 Camera::Camera()
 {
 }
@@ -39,6 +39,14 @@ void Camera::onMove(QPoint pos)
 	last_pos_ = pos;
 	mPosition_ -= mRight_ * dx * move_speed_;
 	mPosition_ += mUp_ * dy * move_speed_;
+}
+
+void Camera::onMove(int key,bool is_press)
+{
+}
+
+void Camera::updataCameraPosition()
+{
 }
 
 void Camera::pitch(float angle)

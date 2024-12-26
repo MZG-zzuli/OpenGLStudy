@@ -12,17 +12,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
-set(PROJECT_SOURCES
-        main.cpp
-        glwidget.cpp
-        glwidget.h
-        Camera.cpp
-        Camera.h
-        OrthographicCamera.h
-        OrthographicCamera.cpp
-        PerspectiveCamera.h
-        PerspectiveCamera.cpp
-)
+# 找到src的目录
+file(GLOB_RECURSE PROJECT_SOURCES "src/*.cpp" "include/*.h" "main.cpp")
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(GLStudy
