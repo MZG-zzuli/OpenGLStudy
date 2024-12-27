@@ -14,6 +14,7 @@
 #include<QMouseEvent>
 #include<memory>
 #include"PerspectiveCamera.h"
+#include"geometry.h"
 class GLWidget : public QOpenGLWidget,public QOpenGLExtraFunctions
 {
     Q_OBJECT
@@ -40,7 +41,7 @@ private:
     void transform();
     std::shared_ptr<QOpenGLShader> vertex_shader_ = nullptr;
     std::shared_ptr<QOpenGLShader> fragment_shader_ = nullptr;
-    std::shared_ptr< QOpenGLShaderProgram> shader_program_ = nullptr;
+    std::shared_ptr<QOpenGLShaderProgram> shader_program_ = nullptr;
     std::shared_ptr<QOpenGLVertexArrayObject> vao_ = nullptr;
     std::shared_ptr<QOpenGLBuffer> vbo_ = nullptr;
     std::shared_ptr<QOpenGLBuffer> color_vbo_ = nullptr;

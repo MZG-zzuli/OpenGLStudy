@@ -3,6 +3,7 @@
 #include<QDebug>
 #include"../include/OrthographicCamera.h"
 #include"../include/perspectiveGameCamera.h"
+#include"../include/geometry.h"
 GLWidget::GLWidget(QOpenGLWidget* parent)
 	: QOpenGLWidget(parent)
 {
@@ -22,7 +23,7 @@ void GLWidget::initializeGL()
 	initializeOpenGLFunctions();
 	glEnable(GL_DEPTH_TEST);								//开启深度测试
 	glDepthFunc(GL_LESS);									//设置深度测试方式为GL_LESS(近处遮挡远处)
-	glClearDepth(1.0f);									//设置深度缓存的初始值为1.0f(默认值)
+	glClearDepthf(1.0);										//设置深度缓存的初始值为1.0f(默认值)
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 	initShaders();
@@ -34,23 +35,25 @@ void GLWidget::initializeGL()
 	//使用顶点缓冲区绘制
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	//使用索引缓冲区绘制
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
 void GLWidget::paintGL()
 {
+	/*
+	* 绘制多个物体时需要分别绑定vao
+	* 分别绑定texture
+	* shder可以共用
+	*/
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		//清除颜色缓存和深度缓存
 	camera->updataCameraPosition();
+
 	shader_program_->bind();
+	vao_->bind();
 	texture_->bind();
-	angle=10.0f;
-	//transMatrix.rotate(qDegreesToRadians(angle), QVector3D(0.0f, 1.0f, 0.0f));
-	//shader_program_->setUniformValue("transMatrix", transMatrix);
-	//shader_program_->setUniformValue("viewMatrix", viewMatrix);
 	shader_program_->setUniformValue("viewMatrix", camera->getViewMatrix());
 	shader_program_->setUniformValue("projectionMatrix", camera->getProjectionMatrix());
-
-	//glDrawArrays(GL_TRIANGLES,0,3);
+	//glDrawArrays(GL_TRIANGLES,0,6);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
@@ -93,7 +96,6 @@ void GLWidget::keyReleaseEvent(QKeyEvent* event)
 
 void GLWidget::wheelEvent(QWheelEvent* event)
 {
-	std::cout<<"wheel:"<<event->delta()<<std::endl;
 	camera->onZoom(event->delta());
 	update();
 }
@@ -113,6 +115,9 @@ void GLWidget::initShaders()
 
 void GLWidget::initBuffers()
 {
+	vao_=std::make_shared<QOpenGLVertexArrayObject>();
+	vao_->create();
+	vao_->bind();
 	vbo_ = std::make_shared<QOpenGLBuffer>();
 
 	//顶点索引
@@ -140,8 +145,8 @@ void GLWidget::initBuffers()
 	int aPos_location = shader_program_->attributeLocation("aPos");
 	shader_program_->enableAttributeArray(aPos_location);
 	//为其指定位置绑定对应的vbo(最近的vbo.bind())
-	shader_program_->setAttributeBuffer(aPos_location, GL_FLOAT, 0, 3, 3 * sizeof(float));
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	shader_program_->setAttributeBuffer(aPos_location, GL_FLOAT, 0, 3);
+	//glVertexAttribPointer(aPos_location, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 	//颜色
 	float colour[] = {
@@ -179,7 +184,7 @@ void GLWidget::initTexture()
 	shader_program_->setAttributeBuffer(aUV_location, GL_FLOAT, 0, 2, 2 * sizeof(float));
 
 	//纹理
-	texture_ = std::make_shared<QOpenGLTexture>(QImage("E:/QtProject/GLStudy/resource/1.jpg").mirrored());
+	texture_ = std::make_shared<QOpenGLTexture>(QImage("E:/QtProject/GLStudy/resource/goku.jpg").mirrored());
 	texture_->setMinificationFilter(QOpenGLTexture::Nearest);
 	texture_->setMagnificationFilter(QOpenGLTexture::Linear);
 	int texture_id = texture_->textureId();
