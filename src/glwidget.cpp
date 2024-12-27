@@ -20,7 +20,9 @@ GLWidget::~GLWidget()
 void GLWidget::initializeGL()
 {
 	initializeOpenGLFunctions();
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);								//开启深度测试
+	glDepthFunc(GL_LESS);									//设置深度测试方式为GL_LESS(近处遮挡远处)
+	glClearDepth(1.0f);									//设置深度缓存的初始值为1.0f(默认值)
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
 	initShaders();
@@ -37,7 +39,7 @@ void GLWidget::initializeGL()
 
 void GLWidget::paintGL()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		//清除颜色缓存和深度缓存
 	camera->updataCameraPosition();
 	shader_program_->bind();
 	texture_->bind();
@@ -119,7 +121,7 @@ void GLWidget::initBuffers()
 	ebo_->bind();
 	unsigned int indices[] = {
 		0, 1, 2,
-		1, 2, 3
+		3,4,5
 	};
 	ebo_->allocate(indices, sizeof(indices));
 
@@ -128,7 +130,9 @@ void GLWidget::initBuffers()
 		-0.5f,-0.5f,0.5f,
 		0.5f,-0.5f,0.5f,
 		-0.5f,0.5f,0.5f,
-		0.5f,0.5f,0.5f
+		0.5f,0.5f,0,
+		0,0,0,
+		0.5,0,0
 	};
 	vbo_->create();
 	vbo_->bind();
@@ -160,6 +164,8 @@ void GLWidget::initTexture()
 	//纹理坐标
 	float uvs[]{
 		0,0,
+		1,0,
+		0,1,
 		1,0,
 		0,1,
 		1,1
