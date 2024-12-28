@@ -5,7 +5,9 @@
 #include<QOpenGLShaderProgram>
 #include<QOpenGLShader>
 #include<QOpenGLTexture>
+#include<QtMath>
 #include<memory>
+#include<vector>
 class Geometry
 {
 public:
@@ -15,8 +17,8 @@ public:
     std::shared_ptr<QOpenGLVertexArrayObject> getVAO();
     std::shared_ptr<QOpenGLTexture> getTexture();
     GLuint getNumVertices() const;
-    static std::shared_ptr<Geometry> createBox(float size);
-    static std::shared_ptr<Geometry> createSphere(float size);
+    static std::shared_ptr<Geometry> createBox(float size);     //边长
+    static std::shared_ptr<Geometry> createSphere(float size);  ///半径
 
 private:
     std::shared_ptr<QOpenGLTexture> texture_ = nullptr;

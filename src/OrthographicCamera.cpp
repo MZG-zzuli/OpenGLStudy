@@ -21,5 +21,5 @@ QMatrix4x4 OrthographicCamera::getProjectionMatrix()
 
 void OrthographicCamera::onZoom(float delta)
 {
-	zoom_ += delta * zoom_speed_;
+	zoom_ -= delta * zoom_speed_;
 }

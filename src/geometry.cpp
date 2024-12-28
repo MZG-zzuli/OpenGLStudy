@@ -120,6 +120,82 @@ std::shared_ptr<Geometry> Geometry::createBox(float size)
 std::shared_ptr<Geometry> Geometry::createSphere(float size)
 {
 	std::shared_ptr<Geometry> sphere = std::make_shared<Geometry>();
+	std::shared_ptr<QOpenGLShader> vertex_shader_ = std::make_shared<QOpenGLShader>(QOpenGLShader::Vertex);
+	vertex_shader_->compileSourceFile("E:/QtProject/GLStudy/resource/vertex.glsl");
+	std::shared_ptr<QOpenGLShader> fragment_shader_ = std::make_shared<QOpenGLShader>(QOpenGLShader::Fragment);
+	fragment_shader_->compileSourceFile("E:/QtProject/GLStudy/resource/fragment.glsl");
+	sphere->shader_program_=std::make_shared<QOpenGLShaderProgram>();
+	sphere->shader_program_->addShader(vertex_shader_.get());
+	sphere->shader_program_->addShader(fragment_shader_.get());
+	sphere->shader_program_->link();
+	sphere->shader_program_->bind();
+	int num_lat_lines = 60;					
+	int num_long_lines = 60;				
+	std::vector<GLfloat> positions;
+	std::vector<GLfloat> uvs;
+	std::vector<GLuint> indices;
+	for (int i = 0; i <= num_lat_lines; i++)
+	{
+		for (int j = 0; j <= num_long_lines; j++)
+		{
+			float x = size * sin(i * M_PI / num_lat_lines) * cos(j * 2 * M_PI / num_long_lines);
+			float y = size * cos(i * M_PI / num_lat_lines);
+			float z = size * sin(i * M_PI / num_lat_lines) * sin(j * 2 * M_PI / num_long_lines);
+			positions.push_back(x);
+			positions.push_back(y);
+			positions.push_back(z);
+			float u=1.0-j*1.0f/num_long_lines;
+			float v=1.0-i*1.0f/num_lat_lines;
+			uvs.push_back(u);
+			uvs.push_back(v);
+		}
+	}
+	for (int i = 0; i < num_lat_lines; i++)
+	{
+		for (int j = 0; j < num_long_lines; j++)
+		{
+			int first = (i * (num_long_lines + 1)) + j;
+			int second = (i * (num_long_lines + 1)) + j + 1;
+			int third = ((i + 1) * (num_long_lines + 1)) + j + 1;
+			int fourth = ((i + 1) * (num_long_lines + 1)) + j;
+			indices.push_back(first);
+			indices.push_back(second);
+			indices.push_back(third);
+			indices.push_back(first);
+			indices.push_back(third);
+			indices.push_back(fourth);
+		}
+	}
+	sphere->vao_= std::make_shared<QOpenGLVertexArrayObject>();
+	sphere->vao_->create();
+	sphere->vao_->bind();
+	sphere->pos_vbo_= std::make_shared<QOpenGLBuffer>();
+	sphere->pos_vbo_->create();
+	sphere->pos_vbo_->bind();
+	sphere->pos_vbo_->allocate(positions.data(), positions.size() * sizeof(GLfloat));
+	GLuint  aPos_location = sphere->shader_program_->attributeLocation("aPos");
+	sphere->shader_program_->enableAttributeArray(aPos_location);
+	sphere->shader_program_->setAttributeBuffer(aPos_location, GL_FLOAT, 0, 3);
 
+	sphere->uv_vbo_= std::make_shared<QOpenGLBuffer>();
+	sphere->uv_vbo_->create();
+	sphere->uv_vbo_->bind();
+	sphere->uv_vbo_->allocate(uvs.data(), uvs.size() * sizeof(GLfloat));
+	GLuint  aUV_location = sphere->shader_program_->attributeLocation("uv");
+	sphere->shader_program_->enableAttributeArray(aUV_location);
+	sphere->shader_program_->setAttributeBuffer(aUV_location, GL_FLOAT, 0, 2);
+
+	sphere->texture_ = std::make_shared<QOpenGLTexture>(QImage("E:/QtProject/GLStudy/resource/earth.png").mirrored());
+	sphere->texture_->setMinificationFilter(QOpenGLTexture::Nearest);
+	sphere->texture_->setMagnificationFilter(QOpenGLTexture::Linear);
+	int texture_id = sphere->texture_->textureId();
+	sphere->texture_->bind(texture_id);
+	sphere->shader_program_->setUniformValue("sampler", texture_id);
+
+	sphere->ebo_ = std::make_shared<QOpenGLBuffer>(QOpenGLBuffer::IndexBuffer);
+	sphere->ebo_->create();
+	sphere->ebo_->bind();
+	sphere->ebo_->allocate(indices.data(), indices.size() * sizeof(GLuint));
+	sphere->num_vertices_ = indices.size();
 	return sphere;
 }

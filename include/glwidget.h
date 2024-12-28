@@ -35,24 +35,7 @@ private:
     void keyPressEvent(QKeyEvent *event) override;          //wasd控制摄像机移动
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent* event) override;
-    void initShaders();
-    void initBuffers();
-    void initTexture();
-    void transform();
-    std::shared_ptr<QOpenGLShader> vertex_shader_ = nullptr;
-    std::shared_ptr<QOpenGLShader> fragment_shader_ = nullptr;
-    std::shared_ptr<QOpenGLShaderProgram> shader_program_ = nullptr;
-    std::shared_ptr<QOpenGLVertexArrayObject> vao_ = nullptr;
-    std::shared_ptr<QOpenGLBuffer> vbo_ = nullptr;
-    std::shared_ptr<QOpenGLBuffer> color_vbo_ = nullptr;
-    std::shared_ptr<QOpenGLBuffer> uv_vbo_ = nullptr;
-    std::shared_ptr<QOpenGLTexture> texture_ = nullptr;
-    std::shared_ptr<QOpenGLBuffer> ebo_ = nullptr;
-    QMatrix4x4 viewMatrix=QMatrix4x4();
-    //QMatrix4x4 perspectMatrix=QMatrix4x4();
+    std::shared_ptr<Geometry> geometry_ = nullptr;
     std::shared_ptr<Camera> camera=nullptr;
-    float angle=0.0f;
-    QMatrix4x4 transMatrix=QMatrix4x4();
-    QPoint lastPos;
 };
 #endif // GLWIDGET_H
