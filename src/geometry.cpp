@@ -57,7 +57,42 @@ std::shared_ptr<Geometry> Geometry::createBox(float size)
 		// Left face
 		-halfSize, -halfSize, -halfSize, -halfSize, -halfSize, halfSize, -halfSize, halfSize, halfSize, -halfSize, halfSize, -halfSize
 	};
+	float normals[] = {		//法线向量
+		//前面
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		//后面
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
 
+		//上面
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+
+		//下面
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+
+		//右面
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+
+		//左面
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+	};
 	float uvs[] = {
 		0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
 		0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
@@ -88,6 +123,14 @@ std::shared_ptr<Geometry> Geometry::createBox(float size)
 	int aPos_location = box->shader_program_->attributeLocation("aPos");
 	box->shader_program_->enableAttributeArray(aPos_location);
 	box->shader_program_->setAttributeBuffer(aPos_location, GL_FLOAT, 0, 3);
+
+	box->nor_vbo_ = std::make_shared<QOpenGLBuffer>();
+	box->nor_vbo_->create();
+	box->nor_vbo_->bind();
+	box->nor_vbo_->allocate(normals, sizeof(normals));
+	int nor_location = box->shader_program_->attributeLocation("aNormal");
+	box->shader_program_->enableAttributeArray(nor_location);
+	box->shader_program_->setAttributeBuffer(nor_location, GL_FLOAT, 0, 3);
 
 	box->uv_vbo_= std::make_shared<QOpenGLBuffer>();
 	box->uv_vbo_->create();
@@ -134,6 +177,7 @@ std::shared_ptr<Geometry> Geometry::createSphere(float size)
 	std::vector<GLfloat> positions;
 	std::vector<GLfloat> uvs;
 	std::vector<GLuint> indices;
+	std::vector<GLfloat> normals;
 	for (int i = 0; i <= num_lat_lines; i++)
 	{
 		for (int j = 0; j <= num_long_lines; j++)
@@ -144,6 +188,9 @@ std::shared_ptr<Geometry> Geometry::createSphere(float size)
 			positions.push_back(x);
 			positions.push_back(y);
 			positions.push_back(z);
+			normals.push_back(x);
+			normals.push_back(y);
+			normals.push_back(z);
 			float u=1.0-j*1.0f/num_long_lines;
 			float v=1.0-i*1.0f/num_lat_lines;
 			uvs.push_back(u);
@@ -176,6 +223,14 @@ std::shared_ptr<Geometry> Geometry::createSphere(float size)
 	GLuint  aPos_location = sphere->shader_program_->attributeLocation("aPos");
 	sphere->shader_program_->enableAttributeArray(aPos_location);
 	sphere->shader_program_->setAttributeBuffer(aPos_location, GL_FLOAT, 0, 3);
+
+	sphere->nor_vbo_ = std::make_shared<QOpenGLBuffer>();
+	sphere->nor_vbo_->create();
+	sphere->nor_vbo_->bind();
+	sphere->nor_vbo_->allocate(normals.data(), normals.size() * sizeof(GLfloat));
+	int nor_location = sphere->shader_program_->attributeLocation("aNormal");
+	sphere->shader_program_->enableAttributeArray(nor_location);
+	sphere->shader_program_->setAttributeBuffer(nor_location, GL_FLOAT, 0, 3);
 
 	sphere->uv_vbo_= std::make_shared<QOpenGLBuffer>();
 	sphere->uv_vbo_->create();

@@ -9,16 +9,21 @@ Camera::~Camera()
 
 QMatrix4x4 Camera::getViewMatrix()
 {
-	QVector3D front = QVector3D::crossProduct(mUp_, mRight_);
-	QVector3D center= mPosition_ + front;
+	QVector3D front = QVector3D::crossProduct(camera_up_, camera_right_);
+	QVector3D center= camera_position_ + front;
 	QMatrix4x4 viewMatrix;
-	viewMatrix.lookAt(mPosition_, center, mUp_);
+	viewMatrix.lookAt(camera_position_, center, camera_up_);
 	return viewMatrix;
 }
 
 void Camera::setLastMousePos(QPoint pos)
 {
 	last_pos_=pos;
+}
+
+QVector3D Camera::getCameraPosition() const
+{
+	return camera_position_;
 }
 
 void Camera::onRotate(QPoint pos)
@@ -37,8 +42,8 @@ void Camera::onMove(QPoint pos)
 	int dx = pos.x() - last_pos_.x();
 	int dy = pos.y() - last_pos_.y();
 	last_pos_ = pos;
-	mPosition_ -= mRight_ * dx * move_speed_;
-	mPosition_ += mUp_ * dy * move_speed_;
+	camera_position_ -= camera_right_ * dx * move_speed_;
+	camera_position_ += camera_up_ * dy * move_speed_;
 }
 
 void Camera::onMove(int key,bool is_press)
@@ -52,9 +57,9 @@ void Camera::updataCameraPosition()
 void Camera::pitch(float angle)
 {
 	QMatrix4x4 rotateMat;
-	rotateMat.rotate(angle, mRight_);				//绕右向量(相机x轴)旋转
-	mUp_ = rotateMat * mUp_;
-	mPosition_ = rotateMat * mPosition_;
+	rotateMat.rotate(angle, camera_right_);				//绕右向量(相机x轴)旋转
+	camera_up_ = rotateMat * camera_up_;
+	camera_position_ = rotateMat * camera_position_;
 
 }
 
@@ -62,7 +67,7 @@ void Camera::yaw(float angle)
 {
 	QMatrix4x4 rotateMat;
 	rotateMat.rotate(angle, QVector3D(0, 1, 0));	//绕世界y轴旋转
-	mUp_ = rotateMat * mUp_;
-	mRight_ = rotateMat * mRight_;
-	mPosition_ = rotateMat * mPosition_;
+	camera_up_ = rotateMat * camera_up_;
+	camera_right_ = rotateMat * camera_right_;
+	camera_position_ = rotateMat * camera_position_;
 }

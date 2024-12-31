@@ -25,6 +25,7 @@ private:
     std::shared_ptr<QOpenGLShaderProgram> shader_program_ = nullptr;
     std::shared_ptr<QOpenGLVertexArrayObject> vao_ = nullptr;
     std::shared_ptr<QOpenGLBuffer> pos_vbo_ = nullptr;
+    std::shared_ptr<QOpenGLBuffer> nor_vbo_ = nullptr;
     std::shared_ptr<QOpenGLBuffer> col_vbo_ = nullptr;
     std::shared_ptr<QOpenGLBuffer> uv_vbo_ = nullptr;
     std::shared_ptr<QOpenGLBuffer> ebo_ = nullptr;

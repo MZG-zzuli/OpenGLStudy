@@ -19,6 +19,6 @@ QMatrix4x4 PerspectiveCamera::getProjectionMatrix()
 
 void PerspectiveCamera::onZoom(float delta)
 {
-	QVector3D front= QVector3D::crossProduct(mUp_, mRight_);
-	mPosition_ += front * delta * zoom_speed_;
+	QVector3D front= QVector3D::crossProduct(camera_up_, camera_right_);
+	camera_position_ += front * delta * zoom_speed_;
 }

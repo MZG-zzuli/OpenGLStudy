@@ -2,14 +2,20 @@
 in vec3 aPos;
 in vec3 aCol;
 in vec2 uv;
+in vec3 aNormal;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
+uniform vec3 cameraPos;
 out vec2 UV;
+out vec3 normal;
+out vec3 modelPos;
 out vec3 colour;
 void main(){
 	vec4 Position=vec4(aPos,1.0);
+	modelPos=aPos;
 	gl_Position=projectionMatrix*viewMatrix*Position;
 	//gl_Position=Position;
 	//colour=aCol*(sin(time)+1)/2;
 	UV=uv;
+	normal=aNormal;
 };
