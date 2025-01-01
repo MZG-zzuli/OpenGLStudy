@@ -142,7 +142,7 @@ std::shared_ptr<Geometry> Geometry::createBox(float size)
 	box->shader_program_->enableAttributeArray(aUV_location);
 	box->shader_program_->setAttributeBuffer(aUV_location, GL_FLOAT, 0, 2);
 
-	box->texture_ = std::make_shared<QOpenGLTexture>(QImage("E:/QtProject/GLStudy/resource/1.jpg").mirrored());
+	box->texture_ = std::make_shared<QOpenGLTexture>(QImage("E:/QtProject/GLStudy/resource/goku.jpg").mirrored());
 	box->texture_->setMinificationFilter(QOpenGLTexture::Nearest);
 	box->texture_->setMagnificationFilter(QOpenGLTexture::Linear);
 	int texture_id = box->texture_->textureId();
@@ -172,8 +172,8 @@ std::shared_ptr<Geometry> Geometry::createSphere(float size)
 	sphere->shader_program_->addShader(fragment_shader_.get());
 	sphere->shader_program_->link();
 	sphere->shader_program_->bind();
-	int num_lat_lines = 60;					
-	int num_long_lines = 60;				
+	int num_lat_lines = 36;
+	int num_long_lines = 36;
 	std::vector<GLfloat> positions;
 	std::vector<GLfloat> uvs;
 	std::vector<GLuint> indices;

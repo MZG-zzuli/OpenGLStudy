@@ -30,7 +30,7 @@ void GLWidget::initializeGL()
 	
 	glClear(GL_COLOR_BUFFER_BIT);
 	geometry_ = Geometry::createSphere(5);
-	geometry_=Geometry::createBox(1);
+	geometry_=Geometry::createBox(3);
 	//使用顶点缓冲区绘制
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
 	//使用索引缓冲区绘制
@@ -44,7 +44,7 @@ void GLWidget::paintGL()
 	* 分别绑定texture
 	* shder可以共用
 	*/
-	QVector3D lightVec(-1, -1, -1);				//光照方向
+	QVector3D lightVec(-1, 0, -1);				//光照方向
 	QVector3D lightColor(1, 1, 1);
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		//清除颜色缓存和深度缓存
@@ -57,6 +57,9 @@ void GLWidget::paintGL()
 	geometry_->getShaderProgram()->setUniformValue("lightvec", lightVec);
 	geometry_->getShaderProgram()->setUniformValue("lightCol", lightColor);
 	geometry_->getShaderProgram()->setUniformValue("cameraPos", camera->getCameraPosition());
+	geometry_->getShaderProgram()->setUniformValue("specularIntensity", specularIntensity);
+	geometry_->getShaderProgram()->setUniformValue("ambientColor", ambientColor);
+	
 	//glDrawArrays(GL_TRIANGLES,0,6);
 	glDrawElements(GL_TRIANGLES, geometry_->getNumVertices(), GL_UNSIGNED_INT, 0);
 }
