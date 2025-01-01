@@ -16,6 +16,7 @@ public:
     virtual void onZoom(float delta) = 0;
     virtual void onMove(int key,bool is_press);
     virtual void updataCameraPosition();
+    virtual void setAspect(float aspect);
 protected:
     QVector3D camera_up_ = QVector3D(0, 1, 0);            //相机上方向
     QVector3D camera_right_ = QVector3D(1, 0, 0);         //相机右方向

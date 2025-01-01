@@ -22,3 +22,8 @@ void PerspectiveCamera::onZoom(float delta)
 	QVector3D front= QVector3D::crossProduct(camera_up_, camera_right_);
 	camera_position_ += front * delta * zoom_speed_;
 }
+
+void PerspectiveCamera::setAspect(float aspect)
+{
+	aspect_ = aspect;
+}

@@ -8,6 +8,8 @@
 #include<QtMath>
 #include<memory>
 #include<vector>
+#include<QMatrix4x4>
+#include<QMatrix3x3>
 class Geometry
 {
 public:
@@ -16,11 +18,14 @@ public:
     std::shared_ptr<QOpenGLShaderProgram> getShaderProgram();
     std::shared_ptr<QOpenGLVertexArrayObject> getVAO();
     std::shared_ptr<QOpenGLTexture> getTexture();
+    QMatrix4x4 getTransform();
+    QMatrix3x3 getNormalMatrix() const;
     GLuint getNumVertices() const;
     static std::shared_ptr<Geometry> createBox(float size);     //边长
     static std::shared_ptr<Geometry> createSphere(float size);  ///半径
 
 private:
+    QMatrix4x4 transform_=QMatrix4x4();
     std::shared_ptr<QOpenGLTexture> texture_ = nullptr;
     std::shared_ptr<QOpenGLShaderProgram> shader_program_ = nullptr;
     std::shared_ptr<QOpenGLVertexArrayObject> vao_ = nullptr;

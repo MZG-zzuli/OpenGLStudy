@@ -23,20 +23,21 @@ void main(){
 	vec3 object_color=texture(sampler,UV).xyz;
 	vec3 normalN=normalize(normal);
 	vec3 lightDirN=normalize(lightvec);
-	vec3 viewDir=normalize(modelPos-cameraPos);
+	vec3 viewDir=normalize(cameraPos-modelPos);
 
 	float diffuse=clamp(dot(-lightDirN,normalN),0.0,1.0);
 	vec3 diffuseColor=lightCol*diffuse*object_color;	//物体漫反射光
 
 	float dotResult=dot(normalN,-lightDirN);
 	float flag=step(0.0,dotResult);					//入射光在背面过来时，夹角大于90度，不产生反射光
-	//vec3 viewDir=normalize(cameraPos-modelPos);
 
-	vec3 lightReflect=normalize(reflect(lightDirN,normalN));
+	vec3 lightReflect=normalize(reflect(lightDirN,normalN));	//Phong光照模型
+	float specular=max(dot(lightReflect,viewDir),0.0);
 
-	float specular=max(dot(lightReflect,-viewDir),0.0);
+	//vec3 halfwayDir =normalize(lightDirN+viewDir);			//Blinn-Phong光照，在相机与光源在法线同侧时仍然有效
+	//float specular=max(dot(halfwayDir,normalN),0);
 
-	specular=pow(specular,64);						//光斑大小
+	specular=pow(specular,32);						//光斑大小
 	vec3 specularColor=specular*lightCol*specularIntensity*flag;		//镜面反射光
 	
 	vec3 object_ambientColor=object_color*ambientColor;		//环境光

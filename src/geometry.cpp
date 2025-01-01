@@ -23,6 +23,17 @@ std::shared_ptr<QOpenGLTexture> Geometry::getTexture()
 	return texture_;
 }
 
+QMatrix4x4 Geometry::getTransform()
+{
+	transform_.rotate(5, QVector3D(0, 1, 0));
+	return transform_;
+}
+
+QMatrix3x3 Geometry::getNormalMatrix() const
+{
+	return transform_.inverted().transposed().normalMatrix();
+}
+
 GLuint Geometry::getNumVertices() const
 {
 	return num_vertices_;
@@ -172,8 +183,8 @@ std::shared_ptr<Geometry> Geometry::createSphere(float size)
 	sphere->shader_program_->addShader(fragment_shader_.get());
 	sphere->shader_program_->link();
 	sphere->shader_program_->bind();
-	int num_lat_lines = 36;
-	int num_long_lines = 36;
+	int num_lat_lines = 360;
+	int num_long_lines = 360;
 	std::vector<GLfloat> positions;
 	std::vector<GLfloat> uvs;
 	std::vector<GLuint> indices;

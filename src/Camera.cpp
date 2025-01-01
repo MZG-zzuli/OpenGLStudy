@@ -54,6 +54,10 @@ void Camera::updataCameraPosition()
 {
 }
 
+void Camera::setAspect(float aspect)
+{
+}
+
 void Camera::pitch(float angle)
 {
 	QMatrix4x4 rotateMat;
