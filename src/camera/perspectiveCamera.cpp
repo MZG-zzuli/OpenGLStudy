@@ -1,4 +1,4 @@
-#include"../include/PerspectiveCamera.h"
+#include"camera/perspectiveCamera.h"
 
 
 
@@ -23,7 +23,7 @@ void PerspectiveCamera::onZoom(float delta)
 	camera_position_ += front * delta * zoom_speed_;
 }
 
-void PerspectiveCamera::setAspect(float aspect)
+void PerspectiveCamera::setAspect(int width, int height)
 {
-	aspect_ = aspect;
+	aspect_ = width / (float)height;
 }

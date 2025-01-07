@@ -11,10 +11,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
-
+include_directories(include/
+)
 # 找到src的目录
-file(GLOB_RECURSE PROJECT_SOURCES "src/*.cpp" "include/*.h" "main.cpp")
-
+file(GLOB_RECURSE PROJECT_SOURCES "src/*.cpp" "*.h" "main.cpp")
+#把ASSETS指代的目录集合的内容，都拷贝到可执行文件目下
+file(COPY "./resource" DESTINATION ${CMAKE_BINARY_DIR})
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(GLStudy

@@ -1,14 +1,14 @@
-﻿#include "../include/glwidget.h"
+﻿#include "glwidget.h"
 #include<iostream>
 #include<QDebug>
-#include"../include/OrthographicCamera.h"
-#include"../include/perspectiveGameCamera.h"
-#include"../include/geometry.h"
+#include"camera/orthographicCamera.h"
+#include"camera/perspectiveGameCamera.h"
+#include"geometry.h"
 GLWidget::GLWidget(QOpenGLWidget* parent)
 	: QOpenGLWidget(parent)
 {
 	//camera = std::make_shared<PerspectiveCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 100.0f);
-	camera=std::make_shared<OrthographicCamera>(-10.0f, 10.0f, -10.0f, 10.0f, -10.0f, 10.0f);
+	camera_=std::make_shared<OrthographicCamera>(-15.0f, 15.0f, -15.0f, 15.0f, -15.0f, 15.0f);
 	//camera = std::make_shared<PerspectiveGameCamera>(65.0f, this->width() /this->height(), 0.1f, 1000.0f);
 }
  
@@ -29,7 +29,21 @@ void GLWidget::initializeGL()
 
 	
 	glClear(GL_COLOR_BUFFER_BIT);
-	geometry_ = Geometry::createSphere(4.5);
+	//geometry_ = Geometry::createSphere(4.5);
+
+	std::shared_ptr<PhongMaterial> material = std::make_shared<PhongMaterial>();
+	material->setTexture("resource/earth.png");
+	Mesh mesh(Geometry::createSphere(4.5), material);
+	meshs.push_back(mesh);
+
+	std::shared_ptr<PhongMaterial> material2 = std::make_shared<PhongMaterial>();
+	material2->setTexture("resource/1.jpg");
+	std::shared_ptr<Geometry> geometry2 = Geometry::createSphere(0.5);
+	Mesh mesh2(geometry2, material2);
+	mesh2.setPosition({ 5,0,5 });
+	meshs.push_back(mesh2);
+
+	render_ = std::make_shared<Renderer>();
 	//geometry_=Geometry::createBox(3);
 	//使用顶点缓冲区绘制
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -39,56 +53,62 @@ void GLWidget::initializeGL()
 
 void GLWidget::paintGL()
 {
+
+
+	render_->render(meshs, camera_, std::make_shared<DirectionalLight>(),
+		std::make_shared<AmbientLight>());
+
 	/*
 	* 绘制多个物体时需要分别绑定vao
 	* 分别绑定texture
 	* shder可以共用
 	*/
-	QVector3D lightVec(-1, 0, -1);				//光照方向
-	QVector3D lightColor(1, 1, 1);
+	//QVector3D lightVec(-1, 0, -1);				//光照方向
+	//QVector3D lightColor(1, 1, 1);
 
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		//清除颜色缓存和深度缓存
-	camera->updataCameraPosition();
-	geometry_->getVAO()->bind();
-	geometry_->getShaderProgram()->bind();
-	geometry_->getTexture()->bind();
+	//glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);		//清除颜色缓存和深度缓存
+	//camera_->updataCameraPosition();
+	//geometry_->getVAO()->bind();
+	//geometry_->getShaderProgram()->bind();
+	//geometry_->getTexture()->bind();
 
-	geometry_->getShaderProgram()->setUniformValue("transform", geometry_->getTransform());
-	geometry_->getShaderProgram()->setUniformValue("normalMatrix", geometry_->getNormalMatrix());
-	geometry_->getShaderProgram()->setUniformValue("viewMatrix", camera->getViewMatrix());
-	geometry_->getShaderProgram()->setUniformValue("projectionMatrix", camera->getProjectionMatrix());
-	geometry_->getShaderProgram()->setUniformValue("lightvec", lightVec);
-	geometry_->getShaderProgram()->setUniformValue("lightCol", lightColor);
-	geometry_->getShaderProgram()->setUniformValue("cameraPos", camera->getCameraPosition());
-	geometry_->getShaderProgram()->setUniformValue("specularIntensity", specularIntensity);
-	geometry_->getShaderProgram()->setUniformValue("ambientColor", ambientColor);
-	
-	//glDrawArrays(GL_TRIANGLES,0,6);
-	glDrawElements(GL_TRIANGLES, geometry_->getNumVertices(), GL_UNSIGNED_INT, 0);
+	//geometry_->getShaderProgram()->setUniformValue("transform", geometry_->getTransform());
+	//geometry_->getShaderProgram()->setUniformValue("normalMatrix", geometry_->getNormalMatrix());
+	//geometry_->getShaderProgram()->setUniformValue("viewMatrix", camera_->getViewMatrix());
+	//geometry_->getShaderProgram()->setUniformValue("projectionMatrix", camera_->getProjectionMatrix());
+	//geometry_->getShaderProgram()->setUniformValue("lightvec", lightVec);
+	//geometry_->getShaderProgram()->setUniformValue("lightCol", lightColor);
+	//geometry_->getShaderProgram()->setUniformValue("cameraPos", camera_->getCameraPosition());
+	//geometry_->getShaderProgram()->setUniformValue("specularIntensity", specularIntensity);
+	//geometry_->getShaderProgram()->setUniformValue("ambientColor", ambientColor);
+	//geometry_->getShaderProgram()->setUniformValue("sampler", geometry_->getTexture()->textureId());
+	//
+	////glDrawArrays(GL_TRIANGLES,0,6);
+	//glDrawElements(GL_TRIANGLES, geometry_->getNumVertices(), GL_UNSIGNED_INT, 0);
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
-	camera->setAspect(this->width() / (float)this->height());
+	camera_->setAspect(w, h);
 }
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
 {
-	camera->setLastMousePos(event->pos());
+	camera_->setLastMousePos(event->pos());
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event)
 {
 	if (event->buttons() & Qt::RightButton)
 	{
-		camera->onRotate(event->pos());
-		std::cout<<"camera position:"<<camera->getCameraPosition().x()<<" "<<camera->getCameraPosition().y()<<" "<<camera->getCameraPosition().z()<<std::endl;
+		camera_->onRotate(event->pos());
+		std::cout<<"camera position:"<<camera_->getCameraPosition().x()<<" "<<camera_->getCameraPosition().y()<<" "<<camera_->getCameraPosition().z()<<std::endl;
 		
 		update();
 	}
 	else if(event->buttons() & Qt::MiddleButton)
 	{
-		camera->onMove(event->pos());
+		camera_->onMove(event->pos());
 		update();
 	}
 }
@@ -99,17 +119,17 @@ void GLWidget::mouseReleaseEvent(QMouseEvent* event)
 
 void GLWidget::keyPressEvent(QKeyEvent* event)
 {
-	camera->onMove(event->key(), true);
+	camera_->onMove(event->key(), true);
 	update();
 }
 
 void GLWidget::keyReleaseEvent(QKeyEvent* event)
 {
-	camera->onMove(event->key(), false);
+	camera_->onMove(event->key(), false);
 }
 
 void GLWidget::wheelEvent(QWheelEvent* event)
 {
-	camera->onZoom(event->delta());
+	camera_->onZoom(event->delta());
 	update();
 }

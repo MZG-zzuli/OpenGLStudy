@@ -1,4 +1,4 @@
-#include "../include/geometry.h"
+#include "geometry.h"
 
 Geometry::Geometry()
 {
@@ -42,13 +42,13 @@ GLuint Geometry::getNumVertices() const
 std::shared_ptr<Geometry> Geometry::createBox(float size)
 {
 	std::shared_ptr<Geometry> box = std::make_shared<Geometry>();
-	std::shared_ptr<QOpenGLShader> vertex_shader_ = std::make_shared<QOpenGLShader>(QOpenGLShader::Vertex);
-	vertex_shader_->compileSourceFile("E:/QtProject/GLStudy/resource/vertex.glsl");
-	std::shared_ptr<QOpenGLShader> fragment_shader_ = std::make_shared<QOpenGLShader>(QOpenGLShader::Fragment);
-	fragment_shader_->compileSourceFile("E:/QtProject/GLStudy/resource/fragment.glsl");
+	std::shared_ptr<QOpenGLShader> vertex_shader = std::make_shared<QOpenGLShader>(QOpenGLShader::Vertex);
+	vertex_shader->compileSourceFile("E:/QtProject/GLStudy/resource/vertex.glsl");
+	std::shared_ptr<QOpenGLShader> fragment_shader = std::make_shared<QOpenGLShader>(QOpenGLShader::Fragment);
+	fragment_shader->compileSourceFile("E:/QtProject/GLStudy/resource/fragment.glsl");
 	box->shader_program_ = std::make_shared<QOpenGLShaderProgram>();
-	box->shader_program_->addShader(vertex_shader_.get());
-	box->shader_program_->addShader(fragment_shader_.get());
+	box->shader_program_->addShader(vertex_shader.get());
+	box->shader_program_->addShader(fragment_shader.get());
 	box->shader_program_->link();
 	box->shader_program_->bind();
 
@@ -159,7 +159,6 @@ std::shared_ptr<Geometry> Geometry::createBox(float size)
 	int texture_id = box->texture_->textureId();
 	box->texture_->bind(texture_id);
 	//box->texture_->bind();
-	box->shader_program_->setUniformValue("sampler", texture_id);
 
 
 	box->ebo_ = std::make_shared<QOpenGLBuffer>(QOpenGLBuffer::IndexBuffer);
@@ -256,7 +255,6 @@ std::shared_ptr<Geometry> Geometry::createSphere(float size)
 	sphere->texture_->setMagnificationFilter(QOpenGLTexture::Linear);
 	int texture_id = sphere->texture_->textureId();
 	sphere->texture_->bind(texture_id);
-	sphere->shader_program_->setUniformValue("sampler", texture_id);
 
 	sphere->ebo_ = std::make_shared<QOpenGLBuffer>(QOpenGLBuffer::IndexBuffer);
 	sphere->ebo_->create();

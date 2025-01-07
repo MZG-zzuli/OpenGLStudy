@@ -13,7 +13,8 @@
 #include<QtMath>
 #include<QMouseEvent>
 #include<memory>
-#include"PerspectiveCamera.h"
+#include"renderer/renderer.h"
+#include"camera/perspectiveCamera.h"
 #include"geometry.h"
 class GLWidget : public QOpenGLWidget,public QOpenGLExtraFunctions
 {
@@ -36,7 +37,9 @@ private:
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent* event) override;
     std::shared_ptr<Geometry> geometry_ = nullptr;
-    std::shared_ptr<Camera> camera=nullptr;
+    std::vector<Mesh> meshs;
+    std::shared_ptr<Renderer> render_ = nullptr;
+    std::shared_ptr<Camera> camera_=nullptr;
     float specularIntensity = 0.5f;                     //高光强度
     QVector3D ambientColor{ 0.2f, 0.2f, 0.2f };         //环境光
 };

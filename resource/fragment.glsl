@@ -38,7 +38,7 @@ void main(){
 	//float specular=max(dot(halfwayDir,normalN),0);
 
 	specular=pow(specular,32);						//光斑大小
-	vec3 specularColor=specular*lightCol*specularIntensity*flag;		//镜面反射光
+	vec3 specularColor=specular*lightCol*object_color*specularIntensity*flag;		//镜面反射光
 	
 	vec3 object_ambientColor=object_color*ambientColor;		//环境光
 	vec3 finalColor=diffuseColor+specularColor+object_ambientColor;

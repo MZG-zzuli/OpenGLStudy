@@ -19,6 +19,7 @@ public:
     std::shared_ptr<QOpenGLVertexArrayObject> getVAO();
     std::shared_ptr<QOpenGLTexture> getTexture();
     QMatrix4x4 getTransform();
+    //获取法线矩阵(法线随着模型坐标变化而变化)
     QMatrix3x3 getNormalMatrix() const;
     GLuint getNumVertices() const;
     static std::shared_ptr<Geometry> createBox(float size);     //边长

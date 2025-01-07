@@ -1,4 +1,4 @@
-#include "../include/Camera.h"
+#include "camera/camera.h"
 Camera::Camera()
 {
 }
@@ -54,7 +54,7 @@ void Camera::updataCameraPosition()
 {
 }
 
-void Camera::setAspect(float aspect)
+void Camera::setAspect(int width, int height)
 {
 }
 

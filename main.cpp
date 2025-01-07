@@ -1,4 +1,4 @@
-#include "include/glwidget.h"
+#include "glwidget.h"
 #include <iostream>
 #include <QApplication>
 #include<thread>

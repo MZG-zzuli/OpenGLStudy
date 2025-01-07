@@ -7,7 +7,7 @@ public:
 	PerspectiveCamera(float fov, float aspect, float Near, float Far);
 	QMatrix4x4 getProjectionMatrix() override;
 	void onZoom(float delta) override;
-	void setAspect(float aspect);
+	void setAspect(int width, int height);
 private:
 	float zoom_speed_ =0.0001;		//缩放速度
 	float fov_;						//视角,角度

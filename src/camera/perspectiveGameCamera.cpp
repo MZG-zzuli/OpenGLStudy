@@ -1,4 +1,4 @@
-#include"../include/perspectiveGameCamera.h"
+#include"camera/perspectiveGameCamera.h"
 
 PerspectiveGameCamera::PerspectiveGameCamera(float fov, float aspect, float Near, float Far):
 	PerspectiveCamera(fov, aspect, Near, Far)
