@@ -6,6 +6,7 @@ in vec3 modelPos;
 in vec3 colour;
 uniform float specularIntensity;
 uniform sampler2D sampler;
+uniform sampler2D specular_map;
 uniform vec3 lightvec;
 uniform vec3 lightCol;
 uniform vec3 cameraPos;
@@ -37,8 +38,9 @@ void main(){
 	//vec3 halfwayDir =normalize(lightDirN+viewDir);			//Blinn-Phong光照，在相机与光源在法线同侧时仍然有效
 	//float specular=max(dot(halfwayDir,normalN),0);
 
-	specular=pow(specular,32);						//光斑大小
-	vec3 specularColor=specular*lightCol*object_color*specularIntensity*flag;		//镜面反射光
+	specular=pow(specular,64);						//光斑大小
+	float specularMask=texture(specular_map,UV).r;
+	vec3 specularColor=specular*lightCol*object_color*specularIntensity*specularMask*flag;		//镜面反射光
 	
 	vec3 object_ambientColor=object_color*ambientColor;		//环境光
 	vec3 finalColor=diffuseColor+specularColor+object_ambientColor;

@@ -15,7 +15,7 @@ out vec3 modelPos;
 out vec3 colour;
 void main(){
 	vec4 Position=vec4(aPos,1.0);
-	Position=transform*modelMatrix*Position;
+	Position=modelMatrix*Position;
 	modelPos=Position.xyz;
 	gl_Position=projectionMatrix*viewMatrix*Position;
 	//gl_Position=Position;

@@ -25,7 +25,7 @@ private:
     virtual void pitch(float angle);                //俯仰角(上下旋转)
     virtual void yaw(float angle);                  //偏航角(左右旋转)
     float sensitivity_ = 0.5f;                      //物体转动灵敏度
-    float move_speed_ = 0.005f;                     //物体移动速度
+    float move_speed_ = 0.05f;                     //物体移动速度
     QPoint last_pos_ = QPoint(0, 0);                //鼠标上一次位置
 
 };

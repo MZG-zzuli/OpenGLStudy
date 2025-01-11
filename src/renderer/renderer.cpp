@@ -50,11 +50,14 @@ void Renderer::phongRender(Mesh& mesh, std::shared_ptr<Camera> camera_,
 	material->getTexture()->bind();
 	GLuint textid=material->getTexture()->textureId();
 	material->getTexture()->bind(textid);
+	GLuint specular_map_id=material->getSpecularTexture()->textureId();
+	material->getSpecularTexture()->bind(specular_map_id);
 
 	shader->setUniformValue("sampler", material->getTexture()->textureId());
-	shader->setUniformValue("transform", geometry->getTransform());
+	shader->setUniformValue("specular_map", material->getSpecularTexture()->textureId());
+	//shader->setUniformValue("transform", geometry->getTransform());
 	shader->setUniformValue("modelMatrix", mesh.getModelMatrix());
-	shader->setUniformValue("normalMatrix", geometry->getNormalMatrix());
+	shader->setUniformValue("normalMatrix", mesh.getNormalMatrix());	//todo normalMatrix计算没有考虑modeMatrix
 	shader->setUniformValue("viewMatrix", camera_->getViewMatrix());
 	shader->setUniformValue("projectionMatrix", camera_->getProjectionMatrix());
 	shader->setUniformValue("lightvec", directional_light->getDirection());

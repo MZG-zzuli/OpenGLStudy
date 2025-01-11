@@ -1,15 +1,16 @@
 ﻿#include "glwidget.h"
 #include<iostream>
 #include<QDebug>
+#include<thread>
 #include"camera/orthographicCamera.h"
 #include"camera/perspectiveGameCamera.h"
 #include"geometry.h"
 GLWidget::GLWidget(QOpenGLWidget* parent)
 	: QOpenGLWidget(parent)
 {
-	//camera = std::make_shared<PerspectiveCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 100.0f);
-	camera_=std::make_shared<OrthographicCamera>(-15.0f, 15.0f, -15.0f, 15.0f, -15.0f, 15.0f);
-	//camera = std::make_shared<PerspectiveGameCamera>(65.0f, this->width() /this->height(), 0.1f, 1000.0f);
+	camera_ = std::make_shared<PerspectiveCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 1000.0f);
+	//camera_=std::make_shared<OrthographicCamera>(-15.0f, 15.0f, -15.0f, 15.0f, -15.0f, 15.0f);
+	//camera_ = std::make_shared<PerspectiveGameCamera>(65.0f, this->width() /this->height(), 0.1f, 1000.0f);
 }
  
 GLWidget::~GLWidget()
@@ -32,18 +33,14 @@ void GLWidget::initializeGL()
 	//geometry_ = Geometry::createSphere(4.5);
 
 	std::shared_ptr<PhongMaterial> material = std::make_shared<PhongMaterial>();
-	material->setTexture("resource/earth.png");
-	Mesh mesh(Geometry::createSphere(4.5), material);
+	material->setTexture("resource/box.png");
+	material->setSpecularTexture("resource/sp_mask.png");
+	Mesh mesh(Geometry::createBox(4), material);
 	meshs.push_back(mesh);
 
-	std::shared_ptr<PhongMaterial> material2 = std::make_shared<PhongMaterial>();
-	material2->setTexture("resource/1.jpg");
-	std::shared_ptr<Geometry> geometry2 = Geometry::createSphere(0.5);
-	Mesh mesh2(geometry2, material2);
-	mesh2.setPosition({ 5,0,5 });
-	meshs.push_back(mesh2);
 
 	render_ = std::make_shared<Renderer>();
+	
 	//geometry_=Geometry::createBox(3);
 	//使用顶点缓冲区绘制
 	//glDrawArrays(GL_TRIANGLES, 0, 3);

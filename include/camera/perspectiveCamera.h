@@ -9,7 +9,7 @@ public:
 	void onZoom(float delta) override;
 	void setAspect(int width, int height);
 private:
-	float zoom_speed_ =0.0001;		//缩放速度
+	float zoom_speed_ =0.003;		//缩放速度
 	float fov_;						//视角,角度
 	float aspect_;					//纵横(宽高)比 
 	float near_;					//近裁剪面

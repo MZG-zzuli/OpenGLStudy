@@ -45,3 +45,8 @@ QMatrix4x4 Object::getModelMatrix()
 	return modelMatrix;
 	
 }
+
+QMatrix3x3 Object::getNormalMatrix()
+{
+	return getModelMatrix().inverted().transposed().normalMatrix();
+}

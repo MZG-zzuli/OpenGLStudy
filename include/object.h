@@ -13,6 +13,8 @@ public:
     void rotateZ(float angle);
     void setScale(QVector3D scale);
     QMatrix4x4 getModelMatrix();
+    QMatrix3x3 getNormalMatrix();
+    float angle = 0;
 protected:
     QVector3D position_{0,0,0};
     float angle_x_{ 0 };

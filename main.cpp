@@ -1,4 +1,5 @@
 #include "glwidget.h"
+#include"object.h"
 #include <iostream>
 #include <QApplication>
 #include<thread>
