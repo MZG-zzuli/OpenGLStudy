@@ -12,7 +12,7 @@ Renderer::~Renderer()
 }
 
 void Renderer::render(std::vector<Mesh>& meshs, std::shared_ptr<Camera> camera_, 
-	std::shared_ptr<PointLight> directional_light, std::shared_ptr<AmbientLight> ambient_light)
+	std::shared_ptr<SpotLight> directional_light, std::shared_ptr<AmbientLight> ambient_light)
 {
 	camera_->updataCameraPosition();
 	glEnable(GL_DEPTH_TEST);
@@ -34,7 +34,7 @@ void Renderer::render(std::vector<Mesh>& meshs, std::shared_ptr<Camera> camera_,
 }
 
 void Renderer::phongRender(Mesh& mesh, std::shared_ptr<Camera> camera,
-	std::shared_ptr<PointLight> light, std::shared_ptr<AmbientLight> ambient_light, 
+	std::shared_ptr<SpotLight> light, std::shared_ptr<AmbientLight> ambient_light,
 	std::shared_ptr<QOpenGLShaderProgram> shader)
 {
 	shader->bind();
@@ -62,9 +62,9 @@ void Renderer::phongRender(Mesh& mesh, std::shared_ptr<Camera> camera,
 	shader->setUniformValue("cameraPos", camera->getCameraPosition());
 	shader->setUniformValue("specularIntensity", light->getSpecularIntensity());
 	shader->setUniformValue("ambientColor", ambient_light->getColor());
-	shader->setUniformValue("k1", light->getAttenuationK1());
-	shader->setUniformValue("k2", light->getAttenuationK2());
-	shader->setUniformValue("kc", light->getAttenuationKc());
+	shader->setUniformValue("targetDirection", light->getTargetDirection());
+	shader->setUniformValue("innerAngle", light->getInnerAngle());
+	shader->setUniformValue("outerAngle", light->getOuterAngle());
 }
 
 void Renderer::whiteRender(Mesh& mesh, std::shared_ptr<Camera> camera, std::shared_ptr<QOpenGLShaderProgram> shader)

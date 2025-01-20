@@ -8,12 +8,12 @@ DirectionalLight::~DirectionalLight()
 {
 }
 
-QVector3D DirectionalLight::getDirection() const
+QVector3D DirectionalLight::getTargetDirection() const
 {
-    return direction_;
+    return target_direction_;
 }
 
-void DirectionalLight::setDirection(const QVector3D& direction)
+void DirectionalLight::setTargetDirection(const QVector3D& direction)
 {
-    direction_ = direction;
+    target_direction_ = direction;
 }

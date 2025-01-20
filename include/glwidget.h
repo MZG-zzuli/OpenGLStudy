@@ -17,6 +17,7 @@
 #include"camera/perspectiveCamera.h"
 #include"geometry.h"
 #include"light/pointLight.h"
+#include"light/spotLight.h"
 class WhiteMaterial;
 #include"material/whiteMaterial.h"
 class GLWidget : public QOpenGLWidget,public QOpenGLExtraFunctions
@@ -45,7 +46,7 @@ private:
     std::shared_ptr<Camera> camera_=nullptr;
     float specularIntensity = 0.5f;                     //高光强度
     QVector3D ambientColor{ 0.2f, 0.2f, 0.2f };         //环境光
-    std::shared_ptr<PointLight> light_ = nullptr;
+    std::shared_ptr<SpotLight> light_ = nullptr;
     float t = 0;
 };
 #endif // GLWIDGET_H

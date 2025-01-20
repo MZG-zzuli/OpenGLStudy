@@ -7,7 +7,9 @@ in vec3 colour;
 uniform float specularIntensity;
 uniform sampler2D sampler;
 uniform sampler2D specular_map;
-uniform vec3 lightvec;
+uniform vec3 targetDirection;
+uniform float innerAngle;		//弧度(内圈）
+uniform float outerAngle;		//弧度(外圈）
 uniform vec3 lightCol;
 uniform vec3 cameraPos;
 uniform vec3 ambientColor;
@@ -28,9 +30,12 @@ void main(){
 	vec3 object_color=texture(sampler,UV).xyz;
 	vec3 normalN=normalize(normal);
 	//vec3 lightDirN=normalize(lightvec);
-	vec3 lightDirN=normalize(modelPos-lightPosition);	//光照方向
+	vec3 lightDirN=normalize(modelPos-lightPosition);	//此处光照方向
+	float Visible=dot(lightDirN,targetDirection);
+	//float visible_flag=step(cos(visibleAngle),Visible);
+	float intensity=clamp((Visible-cos(outerAngle))/(cos(innerAngle)-cos(outerAngle)),0.0,1.0);
 	float dist =length(modelPos-lightPosition);			//光源距离
-	float attenuation=1.0/(kc+k1*dist+k2*dist*dist);	//缩减系数
+	//float attenuation=1.0/(kc+k1*dist+k2*dist*dist);	//缩减系数
 
 	vec3 viewDir=normalize(cameraPos-modelPos);
 
@@ -51,7 +56,7 @@ void main(){
 	vec3 specularColor=specular*lightCol*object_color*specularIntensity*specularMask*flag;		//镜面反射光
 	
 	vec3 object_ambientColor=object_color*ambientColor;		//环境光
-	vec3 finalColor=(diffuseColor+specularColor)*attenuation+object_ambientColor;
+	vec3 finalColor=(diffuseColor+specularColor)*intensity+object_ambientColor;
 	FragColor=vec4(finalColor,1.0);
 
 };
