@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera.h"
+//正交投影相机
 class OrthographicCamera : public Camera
 {
 public:

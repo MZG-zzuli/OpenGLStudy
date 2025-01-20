@@ -13,6 +13,11 @@ void Object::setPosition(QVector3D position)
 	position_ = position;
 }
 
+QVector3D Object::getPosition() const
+{
+	return position_;
+}
+
 void Object::rotateX(float angle)
 {
 	angle_x_ += angle;

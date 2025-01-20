@@ -1,10 +1,12 @@
 #pragma once
 #include<QOpenGLTexture>
 #include<memory>
-#include"material.h"
+#include<mutex>
+#include"material/material.h"
 class PhongMaterial:public Material
 {
 public:
+	static std::shared_ptr<QOpenGLShaderProgram> getShaderProgram();
 	PhongMaterial();
 	~PhongMaterial();
 	void setTexture(std::shared_ptr<QOpenGLTexture> texture);
@@ -14,9 +16,10 @@ public:
 	void setSpecularTexture(std::shared_ptr<QOpenGLTexture> texture);
 	void setSpecularTexture(QString texture_path);
 	std::shared_ptr<QOpenGLTexture> getSpecularTexture() const;
+
 private:
 	std::shared_ptr<QOpenGLTexture> texture_=nullptr;
 	std::shared_ptr<QOpenGLTexture> specular_texture_=nullptr;
 	GLfloat shiness_{ 1.0f };
-
+	static std::once_flag shader_program_flag_;
 };

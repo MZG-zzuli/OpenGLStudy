@@ -6,9 +6,11 @@
 #include"light/light.h"
 #include"light/directionalLight.h"
 #include"light/ambientLight.h"
+#include"light/pointLight.h"
 #include"camera/camera.h"
 #include"material/material.h"
 #include"material/phongMaterial.h"
+#include"material/whiteMaterial.h"
 #include<QOpenGLExtraFunctions>
 #include<QOpenGLShader>
 #include<QOpenGLShaderProgram>
@@ -18,15 +20,12 @@ public:
 	Renderer();
 	~Renderer();
 	void render(std::vector<Mesh>& meshs,std::shared_ptr<Camera> camera_,
-		std::shared_ptr<DirectionalLight> directional_light,std::shared_ptr<AmbientLight> ambient_light);
-	void phongRender(Mesh& mesh, std::shared_ptr<Camera> camera_, std::shared_ptr<DirectionalLight> directional_light,
-		std::shared_ptr<AmbientLight> ambient_light, std::shared_ptr<QOpenGLShaderProgram> shader);
+		std::shared_ptr<PointLight> directional_light,std::shared_ptr<AmbientLight> ambient_light);
+	
 private:
-	//根据指定的shader code文件路径创建shader
-	std::shared_ptr<QOpenGLShaderProgram> createShader(QString vertex_shader_file, QString fragment_shader_file);
-	//根据指定的材质类型获取对应的shader
-	std::shared_ptr<QOpenGLShaderProgram> pickShader(MaterialType type);
-	std::shared_ptr<QOpenGLShaderProgram> phone_shader_=nullptr;
+	void phongRender(Mesh& mesh, std::shared_ptr<Camera> camera, std::shared_ptr<PointLight> light,
+		std::shared_ptr<AmbientLight> ambient_light, std::shared_ptr<QOpenGLShaderProgram> shader);
+	void whiteRender(Mesh& mesh, std::shared_ptr<Camera> camera, std::shared_ptr<QOpenGLShaderProgram> shader);
 
 
 

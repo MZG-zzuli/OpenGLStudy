@@ -11,8 +11,12 @@ uniform vec3 lightvec;
 uniform vec3 lightCol;
 uniform vec3 cameraPos;
 uniform vec3 ambientColor;
+uniform vec3 lightPosition;
 //uniform sampler2D sampler1;
 //uniform sampler2D sampler2;
+uniform float k1;
+uniform float k2;
+uniform float kc;
 void main(){
 	//FragColor1=vec4(UV,0.0f,1.0f);
 	//float intensity=(cos(time)+1)/2;
@@ -23,7 +27,11 @@ void main(){
 	//FragColor=texture(sampler,UV);//mix(grassColor,landColor,noiseColor.r);
 	vec3 object_color=texture(sampler,UV).xyz;
 	vec3 normalN=normalize(normal);
-	vec3 lightDirN=normalize(lightvec);
+	//vec3 lightDirN=normalize(lightvec);
+	vec3 lightDirN=normalize(modelPos-lightPosition);	//光照方向
+	float dist =length(modelPos-lightPosition);			//光源距离
+	float attenuation=1.0/(kc+k1*dist+k2*dist*dist);	//缩减系数
+
 	vec3 viewDir=normalize(cameraPos-modelPos);
 
 	float diffuse=clamp(dot(-lightDirN,normalN),0.0,1.0);
@@ -43,7 +51,7 @@ void main(){
 	vec3 specularColor=specular*lightCol*object_color*specularIntensity*specularMask*flag;		//镜面反射光
 	
 	vec3 object_ambientColor=object_color*ambientColor;		//环境光
-	vec3 finalColor=diffuseColor+specularColor+object_ambientColor;
+	vec3 finalColor=(diffuseColor+specularColor)*attenuation+object_ambientColor;
 	FragColor=vec4(finalColor,1.0);
 
 };

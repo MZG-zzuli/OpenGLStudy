@@ -39,18 +39,9 @@ GLuint Geometry::getNumVertices() const
 	return num_vertices_;
 }
 
-std::shared_ptr<Geometry> Geometry::createBox(float size)
+std::shared_ptr<Geometry> Geometry::createBox(float size, std::shared_ptr<QOpenGLShaderProgram> shader)
 {
 	std::shared_ptr<Geometry> box = std::make_shared<Geometry>();
-	std::shared_ptr<QOpenGLShader> vertex_shader = std::make_shared<QOpenGLShader>(QOpenGLShader::Vertex);
-	vertex_shader->compileSourceFile("E:/QtProject/GLStudy/resource/vertex.glsl");
-	std::shared_ptr<QOpenGLShader> fragment_shader = std::make_shared<QOpenGLShader>(QOpenGLShader::Fragment);
-	fragment_shader->compileSourceFile("E:/QtProject/GLStudy/resource/fragment.glsl");
-	box->shader_program_ = std::make_shared<QOpenGLShaderProgram>();
-	box->shader_program_->addShader(vertex_shader.get());
-	box->shader_program_->addShader(fragment_shader.get());
-	box->shader_program_->link();
-	box->shader_program_->bind();
 
 	float halfSize = size / 2.0f;
 	box->num_vertices_ = 36;
@@ -121,37 +112,37 @@ std::shared_ptr<Geometry> Geometry::createBox(float size)
 		16, 17, 18, 18, 19, 16, // Right face
 		20, 21, 22, 22, 23, 20  // Left face
 	};
-	box->vao_= std::make_shared<QOpenGLVertexArrayObject>();
+	box->vao_ = std::make_shared<QOpenGLVertexArrayObject>();
 	box->vao_->create();
 	box->vao_->bind();
 
-	box->pos_vbo_= std::make_shared<QOpenGLBuffer>();
+	box->pos_vbo_ = std::make_shared<QOpenGLBuffer>();
 	box->pos_vbo_->create();
 	box->pos_vbo_->bind();
 	box->pos_vbo_->allocate(positions, sizeof(positions));
 	//box->glEnableVertexAttribArray(0);
 	//box->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	int aPos_location = box->shader_program_->attributeLocation("aPos");
-	box->shader_program_->enableAttributeArray(aPos_location);
-	box->shader_program_->setAttributeBuffer(aPos_location, GL_FLOAT, 0, 3);
+	GLuint posIdx=shader->attributeLocation("aPos");
+	shader->enableAttributeArray(0);
+	shader->setAttributeBuffer(0, GL_FLOAT, 0, 3);
 
-	box->nor_vbo_ = std::make_shared<QOpenGLBuffer>();
-	box->nor_vbo_->create();
-	box->nor_vbo_->bind();
-	box->nor_vbo_->allocate(normals, sizeof(normals));
-	int nor_location = box->shader_program_->attributeLocation("aNormal");
-	box->shader_program_->enableAttributeArray(nor_location);
-	box->shader_program_->setAttributeBuffer(nor_location, GL_FLOAT, 0, 3);
 
-	box->uv_vbo_= std::make_shared<QOpenGLBuffer>();
+	box->uv_vbo_ = std::make_shared<QOpenGLBuffer>();
 	box->uv_vbo_->create();
 	box->uv_vbo_->bind();
 	box->uv_vbo_->allocate(uvs, sizeof(uvs));
 	//box->glEnableVertexAttribArray(1);
 	//box->glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	int aUV_location = box->shader_program_->attributeLocation("uv");
-	box->shader_program_->enableAttributeArray(aUV_location);
-	box->shader_program_->setAttributeBuffer(aUV_location, GL_FLOAT, 0, 2);
+	shader->enableAttributeArray(1);
+	shader->setAttributeBuffer(1, GL_FLOAT, 0, 2);
+
+	box->nor_vbo_ = std::make_shared<QOpenGLBuffer>();
+	box->nor_vbo_->create();
+	box->nor_vbo_->bind();
+	box->nor_vbo_->allocate(normals, sizeof(normals));
+	GLuint ind = shader->attributeLocation("aNormal");
+	shader->enableAttributeArray(2);
+	shader->setAttributeBuffer(2, GL_FLOAT, 0, 3);
 
 	box->texture_ = std::make_shared<QOpenGLTexture>(QImage("E:/QtProject/GLStudy/resource/goku.jpg").mirrored());
 	box->texture_->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -170,18 +161,10 @@ std::shared_ptr<Geometry> Geometry::createBox(float size)
 	return box;
 }
 
-std::shared_ptr<Geometry> Geometry::createSphere(float size)
+std::shared_ptr<Geometry> Geometry::createSphere(float size, std::shared_ptr<QOpenGLShaderProgram> shader)
 {
 	std::shared_ptr<Geometry> sphere = std::make_shared<Geometry>();
-	std::shared_ptr<QOpenGLShader> vertex_shader_ = std::make_shared<QOpenGLShader>(QOpenGLShader::Vertex);
-	vertex_shader_->compileSourceFile("E:/QtProject/GLStudy/resource/vertex.glsl");
-	std::shared_ptr<QOpenGLShader> fragment_shader_ = std::make_shared<QOpenGLShader>(QOpenGLShader::Fragment);
-	fragment_shader_->compileSourceFile("E:/QtProject/GLStudy/resource/fragment.glsl");
-	sphere->shader_program_=std::make_shared<QOpenGLShaderProgram>();
-	sphere->shader_program_->addShader(vertex_shader_.get());
-	sphere->shader_program_->addShader(fragment_shader_.get());
-	sphere->shader_program_->link();
-	sphere->shader_program_->bind();
+
 	int num_lat_lines = 360;
 	int num_long_lines = 360;
 	std::vector<GLfloat> positions;
@@ -201,8 +184,8 @@ std::shared_ptr<Geometry> Geometry::createSphere(float size)
 			normals.push_back(x);
 			normals.push_back(y);
 			normals.push_back(z);
-			float u=1.0-j*1.0f/num_long_lines;
-			float v=1.0-i*1.0f/num_lat_lines;
+			float u = 1.0 - j * 1.0f / num_long_lines;
+			float v = 1.0 - i * 1.0f / num_lat_lines;
 			uvs.push_back(u);
 			uvs.push_back(v);
 		}
@@ -223,38 +206,29 @@ std::shared_ptr<Geometry> Geometry::createSphere(float size)
 			indices.push_back(fourth);
 		}
 	}
-	sphere->vao_= std::make_shared<QOpenGLVertexArrayObject>();
+	sphere->vao_ = std::make_shared<QOpenGLVertexArrayObject>();
 	sphere->vao_->create();
 	sphere->vao_->bind();
-	sphere->pos_vbo_= std::make_shared<QOpenGLBuffer>();
+	sphere->pos_vbo_ = std::make_shared<QOpenGLBuffer>();
 	sphere->pos_vbo_->create();
 	sphere->pos_vbo_->bind();
 	sphere->pos_vbo_->allocate(positions.data(), positions.size() * sizeof(GLfloat));
-	GLuint  aPos_location = sphere->shader_program_->attributeLocation("aPos");
-	sphere->shader_program_->enableAttributeArray(aPos_location);
-	sphere->shader_program_->setAttributeBuffer(aPos_location, GL_FLOAT, 0, 3);
+	shader->enableAttributeArray(0);
+	shader->setAttributeBuffer(0, GL_FLOAT, 0, 3);
+
+	sphere->uv_vbo_ = std::make_shared<QOpenGLBuffer>();
+	sphere->uv_vbo_->create();
+	sphere->uv_vbo_->bind();
+	sphere->uv_vbo_->allocate(uvs.data(), uvs.size() * sizeof(GLfloat));
+	shader->enableAttributeArray(1);
+	shader->setAttributeBuffer(1, GL_FLOAT, 0, 2);
 
 	sphere->nor_vbo_ = std::make_shared<QOpenGLBuffer>();
 	sphere->nor_vbo_->create();
 	sphere->nor_vbo_->bind();
 	sphere->nor_vbo_->allocate(normals.data(), normals.size() * sizeof(GLfloat));
-	int nor_location = sphere->shader_program_->attributeLocation("aNormal");
-	sphere->shader_program_->enableAttributeArray(nor_location);
-	sphere->shader_program_->setAttributeBuffer(nor_location, GL_FLOAT, 0, 3);
-
-	sphere->uv_vbo_= std::make_shared<QOpenGLBuffer>();
-	sphere->uv_vbo_->create();
-	sphere->uv_vbo_->bind();
-	sphere->uv_vbo_->allocate(uvs.data(), uvs.size() * sizeof(GLfloat));
-	GLuint  aUV_location = sphere->shader_program_->attributeLocation("uv");
-	sphere->shader_program_->enableAttributeArray(aUV_location);
-	sphere->shader_program_->setAttributeBuffer(aUV_location, GL_FLOAT, 0, 2);
-
-	sphere->texture_ = std::make_shared<QOpenGLTexture>(QImage("E:/QtProject/GLStudy/resource/earth.png").mirrored());
-	sphere->texture_->setMinificationFilter(QOpenGLTexture::Nearest);
-	sphere->texture_->setMagnificationFilter(QOpenGLTexture::Linear);
-	int texture_id = sphere->texture_->textureId();
-	sphere->texture_->bind(texture_id);
+	shader->enableAttributeArray(2);
+	shader->setAttributeBuffer(2, GL_FLOAT, 0, 3);
 
 	sphere->ebo_ = std::make_shared<QOpenGLBuffer>(QOpenGLBuffer::IndexBuffer);
 	sphere->ebo_->create();

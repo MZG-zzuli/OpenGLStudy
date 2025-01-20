@@ -17,13 +17,3 @@ void DirectionalLight::setDirection(const QVector3D& direction)
 {
     direction_ = direction;
 }
-
-GLfloat DirectionalLight::getSpecularIntensity() const
-{
-    return specular_intensity_;
-}
-
-void DirectionalLight::setSpecularIntensity(GLfloat intensity)
-{
-    specular_intensity_ = intensity;
-}

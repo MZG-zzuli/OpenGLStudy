@@ -1,8 +1,11 @@
 #pragma once
 
+#include<mutex>
+#include<QOpenGLShaderProgram>
 enum class MaterialType
 {
-    PhongMaterial
+    PhongMaterial,
+    WhiteMaterial
 };
 
 class Material

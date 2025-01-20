@@ -5,6 +5,7 @@
 #include"camera/orthographicCamera.h"
 #include"camera/perspectiveGameCamera.h"
 #include"geometry.h"
+#include"material/whiteMaterial.h"
 GLWidget::GLWidget(QOpenGLWidget* parent)
 	: QOpenGLWidget(parent)
 {
@@ -31,16 +32,31 @@ void GLWidget::initializeGL()
 	
 	glClear(GL_COLOR_BUFFER_BIT);
 	//geometry_ = Geometry::createSphere(4.5);
-
+	light_ = std::make_shared<PointLight>();
 	std::shared_ptr<PhongMaterial> material = std::make_shared<PhongMaterial>();
 	material->setTexture("resource/box.png");
 	material->setSpecularTexture("resource/sp_mask.png");
-	Mesh mesh(Geometry::createBox(4), material);
+	Mesh mesh(Geometry::createBox(4, PhongMaterial::getShaderProgram()), material);
 	meshs.push_back(mesh);
 
-
+	std::shared_ptr<WhiteMaterial> materialWhite = std::make_shared<WhiteMaterial>();
+	Mesh mesh2(Geometry::createSphere(1,WhiteMaterial::getShaderProgram()), materialWhite);
+	mesh2.setPosition(QVector3D(5, 0, 0));
+	meshs.push_back(mesh2);
 	render_ = std::make_shared<Renderer>();
-	
+	light_->setPosition(mesh2.getPosition());
+	std::thread t([&]() {
+		while (1)
+		{
+			QVector3D pos = meshs[1].getPosition();
+			pos.setX(pos.x() + qSin(t) * 4);
+			meshs[1].setPosition(pos);
+			light_->setPosition(pos);
+			t = t + 0.1;
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		}
+		});
+	t.detach();
 	//geometry_=Geometry::createBox(3);
 	//使用顶点缓冲区绘制
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -52,7 +68,7 @@ void GLWidget::paintGL()
 {
 
 
-	render_->render(meshs, camera_, std::make_shared<DirectionalLight>(),
+	render_->render(meshs, camera_, light_,
 		std::make_shared<AmbientLight>());
 
 	/*

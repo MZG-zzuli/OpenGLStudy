@@ -8,6 +8,7 @@ public:
     Object();
     virtual ~Object();
     void setPosition(QVector3D position);
+    QVector3D getPosition() const;          //返回位置
     void rotateX(float angle);
     void rotateY(float angle);
     void rotateZ(float angle);

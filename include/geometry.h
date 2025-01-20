@@ -22,8 +22,8 @@ public:
     //获取法线矩阵(法线随着模型坐标变化而变化)
     QMatrix3x3 getNormalMatrix() const;
     GLuint getNumVertices() const;
-    static std::shared_ptr<Geometry> createBox(float size);     //边长
-    static std::shared_ptr<Geometry> createSphere(float size);  ///半径
+    static std::shared_ptr<Geometry> createBox(float size, std::shared_ptr<QOpenGLShaderProgram> shader);     //边长
+    static std::shared_ptr<Geometry> createSphere(float size, std::shared_ptr<QOpenGLShaderProgram> shader);  ///半径
 
 private:
     QMatrix4x4 transform_=QMatrix4x4();
