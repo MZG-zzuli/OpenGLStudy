@@ -21,11 +21,13 @@ public:
 	Renderer();
 	~Renderer();
 	void render(std::vector<Mesh>& meshs,std::shared_ptr<Camera> camera_,
-		std::shared_ptr<SpotLight> directional_light,std::shared_ptr<AmbientLight> ambient_light);
+		std::shared_ptr<SpotLight> spot_light, std::vector<DirectionalLight> directional_lights,
+		std::shared_ptr<AmbientLight> ambient_light);
 	
 private:
-	void phongRender(Mesh& mesh, std::shared_ptr<Camera> camera, std::shared_ptr<SpotLight> light,
-		std::shared_ptr<AmbientLight> ambient_light, std::shared_ptr<QOpenGLShaderProgram> shader);
+	void phongRender(Mesh& mesh, std::shared_ptr<Camera> camera, std::shared_ptr<SpotLight> spot_light,
+		std::vector<DirectionalLight> directional_lights,std::shared_ptr<AmbientLight> ambient_light,
+		std::shared_ptr<QOpenGLShaderProgram> shader);
 	void whiteRender(Mesh& mesh, std::shared_ptr<Camera> camera, std::shared_ptr<QOpenGLShaderProgram> shader);
 
 

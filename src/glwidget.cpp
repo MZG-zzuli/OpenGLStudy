@@ -32,7 +32,7 @@ void GLWidget::initializeGL()
 	
 	glClear(GL_COLOR_BUFFER_BIT);
 	//geometry_ = Geometry::createSphere(4.5);
-	light_ = std::make_shared<SpotLight>();
+	spot_light_ = std::make_shared<SpotLight>();
 	std::shared_ptr<PhongMaterial> material = std::make_shared<PhongMaterial>();
 	material->setTexture("resource/box.png");
 	material->setSpecularTexture("resource/sp_mask.png");
@@ -41,10 +41,18 @@ void GLWidget::initializeGL()
 
 	std::shared_ptr<WhiteMaterial> materialWhite = std::make_shared<WhiteMaterial>();
 	Mesh mesh2(Geometry::createSphere(0.5,WhiteMaterial::getShaderProgram()), materialWhite);
-	mesh2.setPosition(QVector3D(6, 0, 0));
+	mesh2.setPosition(QVector3D(20, 0, 0));
 	meshs.push_back(mesh2);
 	render_ = std::make_shared<Renderer>();
-	light_->setPosition(mesh2.getPosition());
+	spot_light_->setPosition(mesh2.getPosition());
+	DirectionalLight directional_light1;
+	directional_light1.setColor(QVector3D(0, 0, 1));
+	directional_light1.setTargetDirection(QVector3D(0, 0, 1));
+	DirectionalLight directional_light2;
+	directional_light2.setColor(QVector3D(0, 1, 0));
+	directional_light2.setTargetDirection(QVector3D(0, 1, 0));
+	directional_lights_.push_back(directional_light1);
+	directional_lights_.push_back(directional_light2);
 	/*std::thread t([&]() {
 		while (1)
 		{
@@ -68,7 +76,7 @@ void GLWidget::paintGL()
 {
 
 
-	render_->render(meshs, camera_, light_,
+	render_->render(meshs, camera_, spot_light_, directional_lights_,
 		std::make_shared<AmbientLight>());
 
 	/*
