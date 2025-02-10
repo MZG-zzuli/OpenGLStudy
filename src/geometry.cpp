@@ -4,6 +4,46 @@ Geometry::Geometry()
 {
 }
 
+Geometry::Geometry(QVector<GLfloat> positions, QVector<GLfloat> normals, QVector<GLfloat> uvs, QVector<GLuint> indices, std::shared_ptr<QOpenGLShaderProgram> shader)
+{
+	vao_ = std::make_shared<QOpenGLVertexArrayObject>();
+	vao_->create();
+	vao_->bind();
+
+	pos_vbo_ = std::make_shared<QOpenGLBuffer>();
+	pos_vbo_->create();
+	pos_vbo_->bind();
+	pos_vbo_->allocate(positions.data(), sizeof(GLfloat)*positions.size());
+	//box->glEnableVertexAttribArray(0);
+	//box->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	GLuint posIdx = shader->attributeLocation("aPos");
+	shader->enableAttributeArray(0);
+	shader->setAttributeBuffer(0, GL_FLOAT, 0, 3);
+
+
+	uv_vbo_ = std::make_shared<QOpenGLBuffer>();
+	uv_vbo_->create();
+	uv_vbo_->bind();
+	uv_vbo_->allocate((const void*)uvs.data(), sizeof(GLfloat)*uvs.size());
+	shader->enableAttributeArray(1);
+	shader->setAttributeBuffer(1, GL_FLOAT, 0, 2);
+
+	nor_vbo_ = std::make_shared<QOpenGLBuffer>();
+	nor_vbo_->create();
+	nor_vbo_->bind();
+	nor_vbo_->allocate(normals.data(), sizeof(GLfloat)*normals.size());
+	GLuint ind = shader->attributeLocation("aNormal");
+	shader->enableAttributeArray(2);
+	shader->setAttributeBuffer(2, GL_FLOAT, 0, 3);
+
+
+	ebo_ = std::make_shared<QOpenGLBuffer>(QOpenGLBuffer::IndexBuffer);
+	ebo_->create();
+	ebo_->bind();
+	ebo_->allocate((const void*)indices.data(), sizeof(GLuint)*indices.size());
+	num_vertices_ = indices.size();
+}
+
 Geometry::~Geometry()
 {
 }
@@ -144,11 +184,7 @@ std::shared_ptr<Geometry> Geometry::createBox(float size, std::shared_ptr<QOpenG
 	shader->enableAttributeArray(2);
 	shader->setAttributeBuffer(2, GL_FLOAT, 0, 3);
 
-	box->texture_ = std::make_shared<QOpenGLTexture>(QImage("E:/QtProject/GLStudy/resource/goku.jpg").mirrored());
-	box->texture_->setMinificationFilter(QOpenGLTexture::Nearest);
-	box->texture_->setMagnificationFilter(QOpenGLTexture::Linear);
-	int texture_id = box->texture_->textureId();
-	box->texture_->bind(texture_id);
+
 	//box->texture_->bind();
 
 

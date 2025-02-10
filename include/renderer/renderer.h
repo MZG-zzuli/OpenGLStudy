@@ -15,20 +15,24 @@
 #include<QOpenGLExtraFunctions>
 #include<QOpenGLShader>
 #include<QOpenGLShaderProgram>
+#include"scene.h"
 class Renderer:public QOpenGLExtraFunctions
 {
 public:
 	Renderer();
 	~Renderer();
-	void render(std::vector<Mesh>& meshs,std::shared_ptr<Camera> camera_,
+	void render(std::shared_ptr<Scene> mesh, std::shared_ptr<Camera> camera_,
+		std::shared_ptr<SpotLight> spot_light, std::vector<DirectionalLight> directional_lights,
+		std::shared_ptr<AmbientLight> ambient_light);
+	void renderObject(std::shared_ptr<Object> object,std::shared_ptr<Camera> camera_,
 		std::shared_ptr<SpotLight> spot_light, std::vector<DirectionalLight> directional_lights,
 		std::shared_ptr<AmbientLight> ambient_light);
 	
 private:
-	void phongRender(Mesh& mesh, std::shared_ptr<Camera> camera, std::shared_ptr<SpotLight> spot_light,
+	void phongRender(std::shared_ptr<Mesh> mesh, std::shared_ptr<Camera> camera, std::shared_ptr<SpotLight> spot_light,
 		std::vector<DirectionalLight> directional_lights,std::shared_ptr<AmbientLight> ambient_light,
 		std::shared_ptr<QOpenGLShaderProgram> shader);
-	void whiteRender(Mesh& mesh, std::shared_ptr<Camera> camera, std::shared_ptr<QOpenGLShaderProgram> shader);
+	void whiteRender(std::shared_ptr<Mesh> mesh, std::shared_ptr<Camera> camera, std::shared_ptr<QOpenGLShaderProgram> shader);
 
 
 

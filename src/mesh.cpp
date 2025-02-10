@@ -4,6 +4,7 @@ Mesh::Mesh(std::shared_ptr<Geometry> geometry, std::shared_ptr<Material> materia
     geometry_(geometry),
     material_(material)
 {
+    type_ = ObjectType::Mesh;
 }
 
 Mesh::~Mesh()

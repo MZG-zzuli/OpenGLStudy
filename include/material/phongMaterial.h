@@ -9,12 +9,12 @@ public:
 	static std::shared_ptr<QOpenGLShaderProgram> getShaderProgram();
 	PhongMaterial();
 	~PhongMaterial();
-	void setTexture(std::shared_ptr<QOpenGLTexture> texture);
 	void setShiness(GLfloat shiness);
-	void setTexture(QString texture_path);
+	void setTexture(std::shared_ptr<QOpenGLTexture> texture);
+	//void setTexture(QString texture_path);
 	std::shared_ptr<QOpenGLTexture> getTexture() const;
 	void setSpecularTexture(std::shared_ptr<QOpenGLTexture> texture);
-	void setSpecularTexture(QString texture_path);
+	//void setSpecularTexture(QString texture_path);
 	std::shared_ptr<QOpenGLTexture> getSpecularTexture() const;
 
 private:

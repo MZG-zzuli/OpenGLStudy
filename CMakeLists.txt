@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.5)
 
 project(GLStudy VERSION 0.1 LANGUAGES CXX)
-#set(-DCMAKE_TOOLCHAIN_FILE E:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake)
+set(-DCMAKE_TOOLCHAIN_FILE E:\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -42,7 +42,8 @@ else()
 endif()
 
 target_link_libraries(GLStudy PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
+find_package(assimp CONFIG REQUIRED)
+target_link_libraries(GLStudy PRIVATE assimp::assimp)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.

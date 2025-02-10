@@ -14,6 +14,7 @@ class Geometry
 {
 public:
     Geometry();
+    Geometry(QVector<GLfloat> positions, QVector<GLfloat> normals, QVector<GLfloat> uvs, QVector<GLuint> indices, std::shared_ptr<QOpenGLShaderProgram> shader);
     ~Geometry();
     std::shared_ptr<QOpenGLShaderProgram> getShaderProgram();
     std::shared_ptr<QOpenGLVertexArrayObject> getVAO();

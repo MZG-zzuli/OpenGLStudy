@@ -20,6 +20,7 @@
 #include"light/spotLight.h"
 class WhiteMaterial;
 #include"material/whiteMaterial.h"
+#include"scene.h"
 class GLWidget : public QOpenGLWidget,public QOpenGLExtraFunctions
 {
     Q_OBJECT
@@ -41,7 +42,7 @@ private:
     void keyReleaseEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent* event) override;
     std::shared_ptr<Geometry> geometry_ = nullptr;
-    std::vector<Mesh> meshs;
+    std::shared_ptr<Scene> scene_{ nullptr };
     std::shared_ptr<Renderer> render_ = nullptr;
     std::shared_ptr<Camera> camera_=nullptr;
     float specularIntensity = 0.5f;                     //高光强度
