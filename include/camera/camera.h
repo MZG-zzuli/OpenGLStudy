@@ -5,7 +5,7 @@
 class Camera
 {
 public:
-    Camera();
+    Camera(float Near, float Far);
     virtual ~Camera();
     virtual QMatrix4x4 getViewMatrix();             //在哪里看
     virtual QMatrix4x4 getProjectionMatrix() = 0;   //投影方式(子类实现，正交和透视)
@@ -17,10 +17,14 @@ public:
     virtual void onMove(int key,bool is_press);
     virtual void updataCameraPosition();
     virtual void setAspect(int width, int height);
+    float getNear() const;
+    float getFar() const;
 protected:
     QVector3D camera_up_ = QVector3D(0, 1, 0);            //相机上方向
     QVector3D camera_right_ = QVector3D(1, 0, 0);         //相机右方向
     QVector3D camera_position_ = QVector3D(0, 0, 5.0);    //相机位置
+    float near_;					//近裁剪面
+    float far_;						//远裁剪面
 private:
     virtual void pitch(float angle);                //俯仰角(上下旋转)
     virtual void yaw(float angle);                  //偏航角(左右旋转)

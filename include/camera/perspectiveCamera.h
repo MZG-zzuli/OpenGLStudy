@@ -12,8 +12,6 @@ private:
 	float zoom_speed_ =0.003;		//缩放速度
 	float fov_;						//视角,角度
 	float aspect_;					//纵横(宽高)比 
-	float near_;					//近裁剪面
-	float far_;						//远裁剪面
 
 
 };

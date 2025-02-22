@@ -5,8 +5,7 @@
 PerspectiveCamera::PerspectiveCamera(float fov, float aspect, float Near, float Far):
 	fov_(fov),
 	aspect_(aspect),
-	near_(Near),
-	far_(Far)
+	Camera(Near,Far)
 {
 }
 

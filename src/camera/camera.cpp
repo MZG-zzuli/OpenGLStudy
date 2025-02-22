@@ -1,5 +1,7 @@
 #include "camera/camera.h"
-Camera::Camera()
+
+
+Camera::Camera(float Near, float Far):near_(Near), far_(Far)
 {
 }
 
@@ -56,6 +58,16 @@ void Camera::updataCameraPosition()
 
 void Camera::setAspect(int width, int height)
 {
+}
+
+float Camera::getNear() const
+{
+	return near_;
+}
+
+float Camera::getFar() const
+{
+	return far_;
 }
 
 void Camera::pitch(float angle)

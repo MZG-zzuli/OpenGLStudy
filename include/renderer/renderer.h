@@ -12,6 +12,7 @@
 #include"material/material.h"
 #include"material/phongMaterial.h"
 #include"material/whiteMaterial.h"
+#include"material/depthMaterial.h"
 #include<QOpenGLExtraFunctions>
 #include<QOpenGLShader>
 #include<QOpenGLShaderProgram>
@@ -29,11 +30,13 @@ public:
 		std::shared_ptr<AmbientLight> ambient_light);
 	
 private:
+	//设置渲染状态
+	void setRenderState(std::shared_ptr<Material> material);
 	void phongRender(std::shared_ptr<Mesh> mesh, std::shared_ptr<Camera> camera, std::shared_ptr<SpotLight> spot_light,
 		std::vector<DirectionalLight> directional_lights,std::shared_ptr<AmbientLight> ambient_light,
 		std::shared_ptr<QOpenGLShaderProgram> shader);
 	void whiteRender(std::shared_ptr<Mesh> mesh, std::shared_ptr<Camera> camera, std::shared_ptr<QOpenGLShaderProgram> shader);
-
+	void depthRender(std::shared_ptr<Mesh> mesh, std::shared_ptr<Camera> camera, std::shared_ptr<QOpenGLShaderProgram> shader);
 
 
 };

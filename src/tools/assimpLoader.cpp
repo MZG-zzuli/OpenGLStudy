@@ -96,7 +96,7 @@ std::shared_ptr<QOpenGLTexture> AssimpLoader::processTexture(aiMaterial* ai_mate
 	aiString aipath;
 	ai_material->Get(AI_MATKEY_TEXTURE(type, 0), aipath);	//获取第一个贴图路径
 	QString path = QString(aipath.data);
-	path = path.toLower();
+	path = path.toLower();		//转为小写，不确定
 	if (path.length())
 	{
 		std::cout<<"load texture:"<<path.toStdString()<<std::endl;

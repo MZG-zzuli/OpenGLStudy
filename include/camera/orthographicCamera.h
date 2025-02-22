@@ -11,6 +11,6 @@ public:
 private:
 	float zoom_ = 0.0f;				//缩放系数
 	float zoom_speed_ = 0.003;		//缩放速度
-	float left_, right_, bottom_, top_, near_, far_;
+	float left_, right_, bottom_, top_;
 	int width_, height_;
 };

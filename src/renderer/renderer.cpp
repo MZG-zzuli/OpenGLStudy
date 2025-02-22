@@ -15,8 +15,10 @@ void Renderer::render(std::shared_ptr<Scene> mesh, std::shared_ptr<Camera> camer
 {
 	camera_->updataCameraPosition();
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glDisable(GL_POLYGON_OFFSET_LINE);
 	renderObject(mesh, camera_, spot_light, directional_lights, ambient_light);
 }
 
@@ -28,6 +30,7 @@ void Renderer::renderObject(std::shared_ptr<Object> object, std::shared_ptr<Came
 	if (object->getObjectType() == ObjectType::Mesh)	//如果是mesh，则渲染
 	{
 		std::shared_ptr<Mesh> mesh=std::dynamic_pointer_cast<Mesh>(object);
+		setRenderState(mesh->getMaterial());
 		if (mesh->getMaterial()->getMaterialType() == MaterialType::PhongMaterial)
 		{
 			phongRender(mesh, camera_, spot_light, directional_lights, ambient_light, PhongMaterial::getShaderProgram());
@@ -35,6 +38,10 @@ void Renderer::renderObject(std::shared_ptr<Object> object, std::shared_ptr<Came
 		else if (mesh->getMaterial()->getMaterialType() == MaterialType::WhiteMaterial)
 		{
 			whiteRender(mesh, camera_, WhiteMaterial::getShaderProgram());
+		}
+		else if (mesh->getMaterial()->getMaterialType() == MaterialType::DepthMaterial)
+		{
+			depthRender(mesh, camera_, DepthMaterial::getShaderProgram());
 		}
 		glDrawElements(GL_TRIANGLES, mesh->getGeometry()->getNumVertices(), GL_UNSIGNED_INT, 0);
 	}
@@ -44,6 +51,30 @@ void Renderer::renderObject(std::shared_ptr<Object> object, std::shared_ptr<Came
 		renderObject(object_child, camera_, spot_light, directional_lights, ambient_light);
 	}
 
+}
+
+void Renderer::setRenderState(std::shared_ptr<Material> material)
+{
+	if (material->getEnableDepthTest())
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	else
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+	if (material->getEnablePolygonOffset())
+	{
+		glEnable(material->getPolygonOffsetType());
+		glPolygonOffset(material->getPolygonOffsetFactor(), material->getPolygonOffsetUnits());
+	}
+	else
+	{
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glDisable(GL_POLYGON_OFFSET_LINE);
+	}
+	glDepthFunc(material->getDepthFunc());
+	glDepthMask(material->getEnableDepthMask());
 }
 
 void Renderer::phongRender(std::shared_ptr<Mesh> mesh, std::shared_ptr<Camera> camera,
@@ -96,4 +127,16 @@ void Renderer::whiteRender(std::shared_ptr<Mesh> mesh, std::shared_ptr<Camera> c
 	shader->setUniformValue("viewMatrix", camera->getViewMatrix());
 	shader->setUniformValue("projectionMatrix", camera->getProjectionMatrix());
 
+}
+
+void Renderer::depthRender(std::shared_ptr<Mesh> mesh, std::shared_ptr<Camera> camera, std::shared_ptr<QOpenGLShaderProgram> shader)
+{
+	shader->bind();
+	std::shared_ptr<Geometry> geometry = mesh->getGeometry();
+	geometry->getVAO()->bind();
+	shader->setUniformValue("modelMatrix", mesh->getModelMatrix());
+	shader->setUniformValue("viewMatrix", camera->getViewMatrix());
+	shader->setUniformValue("projectionMatrix", camera->getProjectionMatrix());
+	shader->setUniformValue("near", camera->getNear());
+	shader->setUniformValue("far", camera->getFar());
 }

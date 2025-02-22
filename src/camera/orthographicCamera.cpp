@@ -6,8 +6,7 @@ OrthographicCamera::OrthographicCamera(float left, float right, float bottom, fl
 	right_(right),
 	bottom_(bottom),
 	top_(top),
-	near_(Near),
-	far_(Far)
+	Camera(Near,Far)
 {
 }
 

@@ -4,15 +4,16 @@
 #include<thread>
 #include"camera/orthographicCamera.h"
 #include"camera/perspectiveGameCamera.h"
+#include"material/textureManager.h"
 #include"geometry.h"
 #include"material/whiteMaterial.h"
 #include"tools/assimpLoader.h"
 GLWidget::GLWidget(QOpenGLWidget* parent)
 	: QOpenGLWidget(parent)
 {
-	//camera_ = std::make_shared<PerspectiveCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 1000.0f);
+	camera_ = std::make_shared<PerspectiveCamera>(65.0f, 1920.0f / 1080.0f, 0.1f, 100.0f);
 	//camera_=std::make_shared<OrthographicCamera>(-1500.0f, 1500.0f, -1500.0f, 1500.0f, -1500.0f, 1500.0f);
-	camera_ = std::make_shared<PerspectiveGameCamera>(65.0f, this->width() /this->height(), 0.1f, 1000.0f);
+	//camera_ = std::make_shared<PerspectiveGameCamera>(65.0f, this->width() /this->height(), 0.1f, 1000.0f);
 }
  
 GLWidget::~GLWidget()
@@ -35,14 +36,24 @@ void GLWidget::initializeGL()
 	//geometry_ = Geometry::createSphere(4.5);
 	spot_light_ = std::make_shared<SpotLight>();
 	std::shared_ptr<PhongMaterial> material = std::make_shared<PhongMaterial>();
+	material->setTexture(TextureManager::createTexture("resource/goku.jpg"));
+	material->setSpecularTexture(TextureManager::createTexture("resource/goku.jpg"));
+
 	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(Geometry::createBox(6, PhongMaterial::getShaderProgram()), material);
-	////meshs.push_back(mesh);
+
+
+	std::shared_ptr<PhongMaterial> material2 = std::make_shared<PhongMaterial>();
+	material2->setTexture(TextureManager::createTexture("resource/box.png"));
+	material2->setSpecularTexture(TextureManager::createTexture("resource/box.png"));
+
+	std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(Geometry::createBox(6, PhongMaterial::getShaderProgram()), material2);
+	mesh2->setPosition(QVector3D(0, 0, 0.00001));
 
 	std::shared_ptr<WhiteMaterial> materialWhite = std::make_shared<WhiteMaterial>();
-	std::shared_ptr<Mesh> mesh2 = std::make_shared<Mesh>(Geometry::createSphere(0.5, WhiteMaterial::getShaderProgram()), material);
-	mesh2->setPosition(QVector3D(7, 0, 0));
+	std::shared_ptr<Mesh> mesh3 = std::make_shared<Mesh>(Geometry::createSphere(0.5, WhiteMaterial::getShaderProgram()), material);
+	mesh3->setPosition(QVector3D(7, 0, 0));
 	render_ = std::make_shared<Renderer>();
-	spot_light_->setPosition(mesh2->getPosition());
+	spot_light_->setPosition(mesh3->getPosition());
 	DirectionalLight directional_light1;
 	directional_light1.setColor(QVector3D(1, 1, 1));
 	directional_light1.setTargetDirection(QVector3D(-1, -1, -1));
@@ -54,6 +65,8 @@ void GLWidget::initializeGL()
 
 	auto obj = AssimpLoader::load("resource/fbx/bag/backpack.obj");
 	scene_->addChild(obj);
+	//scene_->addChild(mesh);
+	//scene_->addChild(mesh2);
 	
 	//geometry_=Geometry::createBox(3);
 	//使用顶点缓冲区绘制
